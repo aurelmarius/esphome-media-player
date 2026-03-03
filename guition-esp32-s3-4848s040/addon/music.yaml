@@ -14,7 +14,7 @@ http_request:
 
 # Placeholder shown while album art is loading or when no art is available.
 image:
-  - file: "https://placehold.co/480x480/2d2d2d/555555"
+  - file: "assets/placeholder.png"
     id: album_art_placeholder
     type: rgb565
 
@@ -28,32 +28,9 @@ online_image:
     placeholder: album_art_placeholder
     resize: 480x480
     on_download_finished:
-      - lvgl.widget.hide: artwork_error_label
-      - lambda: |-
-          auto *img = id(album_art_background);
-          int iw = img->get_width();
-          int ih = img->get_height();
-          auto *w = id(album_art_background_widget);
-          lv_img_set_zoom(w, 256);
-          lv_img_set_offset_x(w, 0);
-          lv_img_set_offset_y(w, 0);
-          lv_obj_set_size(w, iw, ih);
-          lv_obj_set_pos(w, (480 - iw) / 2, (480 - ih) / 2);
-      - lvgl.image.update:
-          id: album_art_background_widget
-          src: album_art_background
-      - lvgl.widget.update:
-          id: album_art_background_widget
-          opa: 100%
-      - script.execute: extract_accent_color
-      - script.execute: start_hide_track_info_timer
+      - script.execute: apply_downloaded_artwork
     on_error:
-      - lambda: |-
-          ESP_LOGW("artwork", "Artwork download failed: %s", id(last_artwork_url).c_str());
-      - lvgl.widget.update:
-          id: album_art_background_widget
-          opa: 40%
-      - lvgl.widget.show: artwork_error_label
+      - script.execute: handle_artwork_error
 
   - url: "https://placehold.co/480x480/2d2d2d/555555"
     id: tv_art_background
@@ -62,9 +39,17 @@ online_image:
     placeholder: album_art_placeholder
     resize: 480x480
     on_download_finished:
+      - script.execute: apply_downloaded_artwork
+    on_error:
+      - script.execute: handle_artwork_error
+
+script:
+  - id: apply_downloaded_artwork
+    mode: restart
+    then:
       - lvgl.widget.hide: artwork_error_label
       - lambda: |-
-          auto *img = id(tv_art_background);
+          auto *img = id(is_tv_mode) ? id(tv_art_background) : id(album_art_background);
           int iw = img->get_width();
           int ih = img->get_height();
           auto *w = id(album_art_background_widget);
@@ -73,17 +58,32 @@ online_image:
           lv_img_set_offset_y(w, 0);
           lv_obj_set_size(w, iw, ih);
           lv_obj_set_pos(w, (480 - iw) / 2, (480 - ih) / 2);
-      - lvgl.image.update:
-          id: album_art_background_widget
-          src: tv_art_background
+      - if:
+          condition:
+            lambda: 'return id(is_tv_mode);'
+          then:
+            - lvgl.image.update:
+                id: album_art_background_widget
+                src: tv_art_background
+          else:
+            - lvgl.image.update:
+                id: album_art_background_widget
+                src: album_art_background
       - lvgl.widget.update:
           id: album_art_background_widget
           opa: 100%
       - script.execute: extract_accent_color
       - script.execute: start_hide_track_info_timer
-    on_error:
+
+  - id: handle_artwork_error
+    mode: restart
+    then:
       - lambda: |-
-          ESP_LOGW("artwork", "TV artwork download failed: %s", id(last_tv_artwork_url).c_str());
+          const std::string &url = id(is_tv_mode) ? id(last_tv_artwork_url) : id(last_artwork_url);
+          ESP_LOGW("artwork", "Artwork download failed: %s", url.c_str());
+      - lvgl.image.update:
+          id: album_art_background_widget
+          src: album_art_placeholder
       - lvgl.widget.update:
           id: album_art_background_widget
           opa: 40%

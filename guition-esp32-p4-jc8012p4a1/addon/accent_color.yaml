@@ -52,7 +52,7 @@ script:
           const uint8_t *data = dsc->data;
           if (!data) return;
 
-          int grid = 12;
+          int grid = 20;
           int step_x = img_w / grid;
           int step_y = img_h / grid;
           if (step_x < 1) step_x = 1;

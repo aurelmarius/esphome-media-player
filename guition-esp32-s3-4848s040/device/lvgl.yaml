@@ -133,8 +133,9 @@ lvgl:
         # Play/pause: 96px round, bottom-right corner
         - button:
             id: media_play_pause_button
-            x: 360
-            y: 354
+            align: bottom_right
+            x: -24
+            y: -30
             width: 96px
             height: 96px
             styles: control_round
@@ -171,8 +172,8 @@ lvgl:
         # Progress bar: full screen width, at the very bottom of the screen
         - bar:
             id: media_progress_bar
-            x: 0
-            y: 474
+            align: bottom_mid
+            y: -3
             width: 480
             height: 6
             bg_color: 0x000000

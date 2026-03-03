@@ -105,23 +105,25 @@ interval:
                 }
               }
               return std::string(buf);
-      - lvgl.bar.update:
-            id: media_progress_bar
-            value: !lambda |-
-              if (!id(show_progress_bar).state || id(is_tv_idle)) {
-                lv_obj_add_flag(id(media_progress_bar), LV_OBJ_FLAG_HIDDEN);
-                return 0;
-              }
-              lv_obj_clear_flag(id(media_progress_bar), LV_OBJ_FLAG_HIDDEN);
-              float pos = id(is_tv_mode) ? id(last_tv_media_position) : id(last_media_position);
-              float dur;
-              if (id(is_tv_mode)) {
-                dur = id(tv_media_duration_sensor).has_state() ? id(tv_media_duration_sensor).state : 0.0f;
-              } else {
-                dur = id(media_duration_sensor).has_state() ? id(media_duration_sensor).state : 0.0f;
-              }
-              if (dur > 0) return (int)((pos / dur) * 100.0f);
-              return 0;
+      - if:
+          condition:
+            lambda: 'return !id(show_progress_bar).state || id(is_tv_idle);'
+          then:
+            - lvgl.widget.hide: media_progress_bar
+          else:
+            - lvgl.widget.show: media_progress_bar
+            - lvgl.bar.update:
+                id: media_progress_bar
+                value: !lambda |-
+                  float pos = id(is_tv_mode) ? id(last_tv_media_position) : id(last_media_position);
+                  float dur;
+                  if (id(is_tv_mode)) {
+                    dur = id(tv_media_duration_sensor).has_state() ? id(tv_media_duration_sensor).state : 0.0f;
+                  } else {
+                    dur = id(media_duration_sensor).has_state() ? id(media_duration_sensor).state : 0.0f;
+                  }
+                  if (dur > 0) return (int)((pos / dur) * 100.0f);
+                  return 0;
 
 text_sensor:
   - platform: template
@@ -191,16 +193,19 @@ text_sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return !id(is_tv_mode) && !x.empty();'
+            lambda: |-
+              if (id(is_tv_mode) || x.empty()) return false;
+              std::string path = x;
+              while (!path.empty() && (path.back() == '\n' || path.back() == '\r' || path.back() == ' ')) path.pop_back();
+              std::string new_url = (path.substr(0, 7) == "http://" || path.substr(0, 8) == "https://") ? path : (id(ha_base_url) + path);
+              if (new_url == id(last_artwork_url)) return false;
+              id(last_artwork_url) = new_url;
+              return true;
           then:
             - lvgl.widget.update:
                 id: album_art_background_widget
                 opa: 50%
             - lvgl.widget.hide: artwork_error_label
-            - lambda: |-
-                std::string path = x;
-                while (!path.empty() && (path.back() == '\n' || path.back() == '\r' || path.back() == ' ')) path.pop_back();
-                id(last_artwork_url) = (path.substr(0, 7) == "http://" || path.substr(0, 8) == "https://") ? path : (id(ha_base_url) + path);
             - online_image.set_url:
                 id: album_art_background
                 url: !lambda 'return id(last_artwork_url);'
