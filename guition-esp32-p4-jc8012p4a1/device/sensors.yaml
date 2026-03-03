@@ -72,15 +72,6 @@ interval:
       - lvgl.label.update:
             id: media_time_label
             text: !lambda |-
-              if (id(is_tv_mode)) {
-                float tv_dur = id(tv_media_duration_sensor).has_state() ? id(tv_media_duration_sensor).state : 0.0f;
-                bool tv_playing = id(tv_media_player_state_sensor).has_state() && id(tv_media_player_state_sensor).state == "playing";
-                if (!tv_playing && tv_dur <= 0.0f) {
-                  lv_obj_add_flag(id(media_time_label), LV_OBJ_FLAG_HIDDEN);
-                  return std::string("");
-                }
-                lv_obj_clear_flag(id(media_time_label), LV_OBJ_FLAG_HIDDEN);
-              }
               float pos = id(is_tv_mode) ? id(last_tv_media_position) : id(last_media_position);
               float dur;
               if (id(is_tv_mode)) {
@@ -116,14 +107,6 @@ interval:
               if (!id(show_progress_bar).state) {
                 lv_obj_add_flag(id(media_progress_bar), LV_OBJ_FLAG_HIDDEN);
                 return 0;
-              }
-              if (id(is_tv_mode)) {
-                float tv_dur = id(tv_media_duration_sensor).has_state() ? id(tv_media_duration_sensor).state : 0.0f;
-                bool tv_playing = id(tv_media_player_state_sensor).has_state() && id(tv_media_player_state_sensor).state == "playing";
-                if (!tv_playing && tv_dur <= 0.0f) {
-                  lv_obj_add_flag(id(media_progress_bar), LV_OBJ_FLAG_HIDDEN);
-                  return 0;
-                }
               }
               lv_obj_clear_flag(id(media_progress_bar), LV_OBJ_FLAG_HIDDEN);
               float pos = id(is_tv_mode) ? id(last_tv_media_position) : id(last_media_position);

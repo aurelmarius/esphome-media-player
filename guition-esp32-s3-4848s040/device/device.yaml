@@ -537,19 +537,6 @@ script:
             - online_image.set_url:
                 id: tv_art_background
                 url: !lambda 'return id(last_tv_artwork_url);'
-      - if:
-          condition:
-            lambda: |-
-              return !id(tv_media_player_state_sensor).has_state()
-                  || id(tv_media_player_state_sensor).state != "playing";
-          then:
-            - lambda: 'id(artist_has_content) = false;'
-            - lvgl.widget.hide: media_artist_label
-            - lvgl.widget.hide: media_time_label
-            - lvgl.widget.hide: media_progress_bar
-            - lvgl.widget.update:
-                id: album_art_background_widget
-                opa: 0%
       - script.execute: show_track_view
       - logger.log: "TV: entered TV mode"
 

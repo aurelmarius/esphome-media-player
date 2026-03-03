@@ -140,8 +140,6 @@ text_sensor:
                       id: media_play_icon
                   - lvgl.widget.show:
                       id: media_pause_icon
-                  - lvgl.widget.show:
-                      id: media_time_label
                   - light.turn_on:
                       id: backlight
                       brightness: 100%
