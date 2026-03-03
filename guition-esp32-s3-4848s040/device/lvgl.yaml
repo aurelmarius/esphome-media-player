@@ -21,6 +21,20 @@ lvgl:
       pad_right: 0
 
       widgets:
+        # Colored backdrop behind artwork (visible for non-square TV art)
+        - obj:
+            id: artwork_bg_panel
+            x: 0
+            y: 0
+            width: 480px
+            height: 480px
+            bg_color: 0x000000
+            bg_opa: 100%
+            radius: 0
+            border_width: 0
+            pad_all: 0
+            scrollable: false
+
         # Full-screen artwork background
         - image:
             id: album_art_background_widget

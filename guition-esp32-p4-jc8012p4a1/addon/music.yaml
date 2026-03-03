@@ -24,7 +24,9 @@
 # =============================================================================
 
 external_components:
-  - source: github://jtenniswood/esphome-onlineimage-grayscale-fix@main
+  - source:
+      type: local
+      path: ../../components
     components: [online_image]
 
 http_request:
@@ -47,12 +49,15 @@ online_image:
     on_download_finished:
       - lvgl.widget.hide: artwork_error_label
       - lambda: |-
+          auto *img = id(album_art_background);
+          int iw = img->get_width();
+          int ih = img->get_height();
           auto *w = id(album_art_background_widget);
           lv_img_set_zoom(w, 256);
           lv_img_set_offset_x(w, 0);
           lv_img_set_offset_y(w, 0);
-          lv_obj_set_size(w, 800, 800);
-          lv_obj_set_pos(w, 0, 0);
+          lv_obj_set_size(w, iw, ih);
+          lv_obj_set_pos(w, (800 - iw) / 2, (800 - ih) / 2);
       - lvgl.image.update:
           id: album_art_background_widget
           src: album_art_background

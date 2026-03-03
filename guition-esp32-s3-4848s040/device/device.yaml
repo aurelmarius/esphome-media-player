@@ -530,7 +530,11 @@ script:
   - id: exit_tv_mode
     mode: single
     then:
-      - lambda: 'id(is_tv_mode) = false;'
+      - lambda: |-
+          id(is_tv_mode) = false;
+          lv_obj_set_style_bg_color(id(artwork_bg_panel), lv_color_make(0, 0, 0), 0);
+          lv_obj_set_size(id(album_art_background_widget), 480, 480);
+          lv_obj_set_pos(id(album_art_background_widget), 0, 0);
       - lvgl.label.update:
           id: media_title_label
           text: !lambda |-
