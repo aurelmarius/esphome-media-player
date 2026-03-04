@@ -101,18 +101,13 @@ script:
             lv_color_t bright_accent = lv_color_make(br, bg, bb);
             lv_obj_set_style_bg_color(id(media_play_pause_button), bright_accent, 0);
 
-            // Slider indicator colors (accent tint)
-            lv_color_t slider_bg = lv_color_make(r / 5, g / 5, b / 5);
-            lv_obj_set_style_bg_color(id(group_volume_slider), slider_bg, 0);
-            lv_obj_set_style_bg_color(id(group_volume_slider), bright_accent, LV_PART_INDICATOR);
-            lv_obj_t *spk_sliders[] = {
-              id(speaker_slider_0), id(speaker_slider_1), id(speaker_slider_2), id(speaker_slider_3),
-              id(speaker_slider_4), id(speaker_slider_5), id(speaker_slider_6), id(speaker_slider_7)
-            };
-            for (int si = 0; si < 8; si++) {
-              lv_obj_set_style_bg_color(spk_sliders[si], slider_bg, 0);
-              lv_obj_set_style_bg_color(spk_sliders[si], bright_accent, LV_PART_INDICATOR);
-            }
+            // Store slider accent colors for lazy application in update_grouping_panel
+            id(accent_slider_bg_r) = r / 5;
+            id(accent_slider_bg_g) = g / 5;
+            id(accent_slider_bg_b) = b / 5;
+            id(accent_slider_ind_r) = br;
+            id(accent_slider_ind_g) = bg;
+            id(accent_slider_ind_b) = bb;
 
             auto call = id(accent_color_light).turn_on();
             call.set_rgb(r / 255.0f, g / 255.0f, b / 255.0f);
