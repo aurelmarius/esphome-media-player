@@ -267,9 +267,10 @@ script:
             id(speaker_name_0), id(speaker_name_1), id(speaker_name_2), id(speaker_name_3),
             id(speaker_name_4), id(speaker_name_5), id(speaker_name_6), id(speaker_name_7)
           };
-          lv_obj_t *icons[] = {
-            id(speaker_icon_0), id(speaker_icon_1), id(speaker_icon_2), id(speaker_icon_3),
-            id(speaker_icon_4), id(speaker_icon_5), id(speaker_icon_6), id(speaker_icon_7)
+          // Row 0 has no button (leader); btn_labels[0] is unused
+          lv_obj_t *btn_labels[] = {
+            nullptr, id(speaker_btn_label_1), id(speaker_btn_label_2), id(speaker_btn_label_3),
+            id(speaker_btn_label_4), id(speaker_btn_label_5), id(speaker_btn_label_6), id(speaker_btn_label_7)
           };
           lv_obj_t *rows[] = {
             id(speaker_row_0), id(speaker_row_1), id(speaker_row_2), id(speaker_row_3),
@@ -280,9 +281,6 @@ script:
             id(speaker_slider_4), id(speaker_slider_5), id(speaker_slider_6), id(speaker_slider_7)
           };
 
-          const char *icon_on  = "\U000F05E0";
-          const char *icon_off = "\U000F0766";
-
           id(speaker_slider_updating) = true;
 
           for (int i = 0; i < 8; i++) {
@@ -291,12 +289,12 @@ script:
               lv_label_set_text(name_labels[i], id(speaker_names)[i].c_str());
 
               if (id(speaker_grouped)[i]) {
-                lv_label_set_text(icons[i], icon_on);
+                if (btn_labels[i]) lv_label_set_text(btn_labels[i], "Remove");
                 lv_obj_set_height(rows[i], 110);
                 lv_obj_clear_flag(sliders[i], LV_OBJ_FLAG_HIDDEN);
                 lv_slider_set_value(sliders[i], (int)(id(speaker_volumes)[i] * 100.0f), LV_ANIM_OFF);
               } else {
-                lv_label_set_text(icons[i], icon_off);
+                if (btn_labels[i]) lv_label_set_text(btn_labels[i], "+ Add");
                 lv_obj_set_height(rows[i], 48);
                 lv_obj_add_flag(sliders[i], LV_OBJ_FLAG_HIDDEN);
               }

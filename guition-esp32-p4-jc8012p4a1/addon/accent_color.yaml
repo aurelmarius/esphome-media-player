@@ -92,10 +92,27 @@ script:
             ESP_LOGI("accent", "Accent color: rgb(%d,%d,%d)", r, g, b);
 
             int dr = r / 3, dg = g / 3, db = b / 3;
-            lv_obj_set_style_bg_color(id(accent_bg_panel), lv_color_make(dr, dg, db), 0);
-            lv_obj_set_style_bg_color(id(artwork_bg_panel), lv_color_make(dr, dg, db), 0);
+            lv_color_t dark_accent = lv_color_make(dr, dg, db);
+            lv_obj_set_style_bg_color(id(accent_bg_panel), dark_accent, 0);
+            lv_obj_set_style_bg_color(id(artwork_bg_panel), dark_accent, 0);
+            lv_obj_set_style_bg_color(id(settings_panel), dark_accent, 0);
+
             int br = r * 3 / 4, bg = g * 3 / 4, bb = b * 3 / 4;
-            lv_obj_set_style_bg_color(id(media_play_pause_button), lv_color_make(br, bg, bb), 0);
+            lv_color_t bright_accent = lv_color_make(br, bg, bb);
+            lv_obj_set_style_bg_color(id(media_play_pause_button), bright_accent, 0);
+
+            // Slider indicator colors (accent tint)
+            lv_color_t slider_bg = lv_color_make(r / 5, g / 5, b / 5);
+            lv_obj_set_style_bg_color(id(group_volume_slider), slider_bg, 0);
+            lv_obj_set_style_bg_color(id(group_volume_slider), bright_accent, LV_PART_INDICATOR);
+            lv_obj_t *spk_sliders[] = {
+              id(speaker_slider_0), id(speaker_slider_1), id(speaker_slider_2), id(speaker_slider_3),
+              id(speaker_slider_4), id(speaker_slider_5), id(speaker_slider_6), id(speaker_slider_7)
+            };
+            for (int si = 0; si < 8; si++) {
+              lv_obj_set_style_bg_color(spk_sliders[si], slider_bg, 0);
+              lv_obj_set_style_bg_color(spk_sliders[si], bright_accent, LV_PART_INDICATOR);
+            }
 
             auto call = id(accent_color_light).turn_on();
             call.set_rgb(r / 255.0f, g / 255.0f, b / 255.0f);
