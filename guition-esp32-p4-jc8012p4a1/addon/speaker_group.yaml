@@ -288,7 +288,11 @@ script:
               lv_obj_clear_flag(cards[i], LV_OBJ_FLAG_HIDDEN);
               lv_label_set_text(name_labels[i], id(speaker_names)[i].c_str());
 
-              lv_obj_add_flag(vol_labels[i], LV_OBJ_FLAG_HIDDEN);
+              int pct = (int)(id(speaker_volumes)[i] * 100.0f);
+              char vol_buf[8];
+              snprintf(vol_buf, sizeof(vol_buf), "%d%%", pct);
+              lv_label_set_text(vol_labels[i], vol_buf);
+              lv_obj_clear_flag(vol_labels[i], LV_OBJ_FLAG_HIDDEN);
 
               if (id(speaker_grouped)[i]) {
                 lv_obj_set_style_bg_opa(cards[i], LV_OPA_COVER, 0);
@@ -309,7 +313,11 @@ script:
             }
           }
 
-          lv_obj_add_flag(id(group_vol_label), LV_OBJ_FLAG_HIDDEN);
+          int group_pct = (int)(id(speaker_volumes)[0] * 100.0f);
+          char grp_buf[8];
+          snprintf(grp_buf, sizeof(grp_buf), "%d%%", group_pct);
+          lv_label_set_text(id(group_vol_label), grp_buf);
+          lv_obj_clear_flag(id(group_vol_label), LV_OBJ_FLAG_HIDDEN);
 
   # ---------------------------------------------------------------------------
   # Join / unjoin a speaker by slot index (stored in a global before calling).

@@ -390,13 +390,13 @@ lvgl:
                         width: 200
                         height: 180
                         radius: 24
-                        bg_color: 0x000000
+                        bg_color: 0x353535
                         bg_opa: 100%
                         border_width: 0
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         layout:
                           type: flex
@@ -419,13 +419,13 @@ lvgl:
                               widgets:
                                 - label:
                                     text: "Group"
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: group_vol_label
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -443,9 +443,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -458,9 +458,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -486,7 +486,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         hidden: true
                         layout:
@@ -511,13 +511,13 @@ lvgl:
                                 - label:
                                     id: speaker_name_0
                                     text: ""
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: speaker_vol_label_0
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -535,9 +535,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -553,9 +553,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -584,7 +584,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         hidden: true
                         on_click:
@@ -613,13 +613,13 @@ lvgl:
                                 - label:
                                     id: speaker_name_1
                                     text: ""
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: speaker_vol_label_1
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -637,9 +637,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -655,9 +655,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -686,7 +686,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         hidden: true
                         on_click:
@@ -715,13 +715,13 @@ lvgl:
                                 - label:
                                     id: speaker_name_2
                                     text: ""
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: speaker_vol_label_2
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -739,9 +739,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -757,9 +757,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -788,7 +788,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         hidden: true
                         on_click:
@@ -817,13 +817,13 @@ lvgl:
                                 - label:
                                     id: speaker_name_3
                                     text: ""
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: speaker_vol_label_3
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -841,9 +841,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -859,9 +859,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -890,7 +890,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         hidden: true
                         on_click:
@@ -919,13 +919,13 @@ lvgl:
                                 - label:
                                     id: speaker_name_4
                                     text: ""
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: speaker_vol_label_4
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -943,9 +943,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -961,9 +961,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -992,7 +992,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         hidden: true
                         on_click:
@@ -1021,13 +1021,13 @@ lvgl:
                                 - label:
                                     id: speaker_name_5
                                     text: ""
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: speaker_vol_label_5
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -1045,9 +1045,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -1063,9 +1063,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -1094,7 +1094,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         hidden: true
                         on_click:
@@ -1123,13 +1123,13 @@ lvgl:
                                 - label:
                                     id: speaker_name_6
                                     text: ""
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: speaker_vol_label_6
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -1147,9 +1147,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -1165,9 +1165,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -1196,7 +1196,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 34
+                        pad_bottom: 20
                         scrollable: false
                         hidden: true
                         on_click:
@@ -1225,13 +1225,13 @@ lvgl:
                                 - label:
                                     id: speaker_name_7
                                     text: ""
-                                    text_font: roboto_light26_font
+                                    text_font: roboto_light30_font
                                     text_color: 0xFFFFFF
                                     width: 150
                                 - label:
                                     id: speaker_vol_label_7
                                     text: ""
-                                    text_font: roboto_light20_font
+                                    text_font: roboto_light23_font
                                     text_color: 0xFFFFFF
                                     text_opa: 80%
                           - obj:
@@ -1249,9 +1249,9 @@ lvgl:
                                 pad_column: 12
                               widgets:
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
@@ -1267,9 +1267,9 @@ lvgl:
                                           text_color: 0x000000
                                           align: center
                                 - button:
-                                    width: 40
-                                    height: 40
-                                    radius: 20
+                                    width: 50
+                                    height: 50
+                                    radius: 25
                                     bg_color: 0xFFFFFF
                                     border_width: 0
                                     pad_all: 0
