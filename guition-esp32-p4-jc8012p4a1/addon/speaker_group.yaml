@@ -41,6 +41,9 @@ globals:
   - id: speaker_vol_set_level
     type: float
     initial_value: '0.0f'
+  - id: group_vol_baseline
+    type: int
+    initial_value: '0'
 
 text_sensor:
   - platform: homeassistant
@@ -134,22 +137,16 @@ script:
             return;
           }
 
-          // Selected player goes in slot 0 — if it's not in the Sonos list,
-          // this device isn't controlling a Sonos speaker so hide grouping.
           std::string selected = id(media_player_entity).state;
           int count = 0;
           bool found_selected = false;
 
-          for (size_t i = 0; i < ids.size(); i++) {
-            if (ids[i] == selected) {
-              id(speaker_entity_ids)[0] = ids[i];
-              id(speaker_names)[0] = (i < names.size()) ? names[i] : ids[i];
-              id(speaker_volumes)[0] = (i < vols.size()) ? vols[i] : 0.0f;
-              id(speaker_grouped)[0] = true;
-              count = 1;
-              found_selected = true;
-              break;
-            }
+          for (size_t i = 0; i < ids.size() && count < 8; i++) {
+            id(speaker_entity_ids)[count] = ids[i];
+            id(speaker_names)[count] = (i < names.size()) ? names[i] : ids[i];
+            id(speaker_volumes)[count] = (i < vols.size()) ? vols[i] : 0.0f;
+            if (ids[i] == selected) found_selected = true;
+            count++;
           }
 
           if (!found_selected) {
@@ -157,16 +154,6 @@ script:
             lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
             return;
-          }
-
-          // Remaining speakers fill slots 1..7
-          for (size_t i = 0; i < ids.size() && count < 8; i++) {
-            if (ids[i] != selected) {
-              id(speaker_entity_ids)[count] = ids[i];
-              id(speaker_names)[count] = (i < names.size()) ? names[i] : ids[i];
-              id(speaker_volumes)[count] = (i < vols.size()) ? vols[i] : 0.0f;
-              count++;
-            }
           }
 
           id(speaker_count) = count;
@@ -180,9 +167,13 @@ script:
             lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
           }
 
-          // Sync the arc to the primary speaker's volume
-          int primary_pct = (int)(id(speaker_volumes)[0] * 100.0f);
-          id(prev_arc_value) = primary_pct;
+          // Sync the arc to the selected speaker's volume
+          for (int i = 0; i < count; i++) {
+            if (id(speaker_entity_ids)[i] == selected) {
+              id(prev_arc_value) = (int)(id(speaker_volumes)[i] * 100.0f);
+              break;
+            }
+          }
 
       - script.execute: update_group_state
 
@@ -226,24 +217,25 @@ script:
             if (!token.empty()) members.push_back(token);
           }
 
-          // Slot 0 (selected player) is always grouped
-          id(speaker_grouped)[0] = true;
-
-          // For slots 1..7, check membership
+          std::string selected = id(media_player_entity).state;
           int count = id(speaker_count);
-          for (int i = 1; i < count; i++) {
-            bool found = false;
-            for (auto &m : members) {
-              if (m == id(speaker_entity_ids)[i]) {
-                found = true;
-                break;
+          for (int i = 0; i < count; i++) {
+            if (id(speaker_entity_ids)[i] == selected) {
+              id(speaker_grouped)[i] = true;
+            } else {
+              bool found = false;
+              for (auto &m : members) {
+                if (m == id(speaker_entity_ids)[i]) {
+                  found = true;
+                  break;
+                }
               }
+              id(speaker_grouped)[i] = found;
             }
-            id(speaker_grouped)[i] = found;
           }
 
-          // Sort slots 1..N: grouped first, then alphabetical within each partition
-          for (int i = 1; i < count - 1; i++) {
+          // Sort ALL slots: grouped first, then alphabetical within each partition
+          for (int i = 0; i < count - 1; i++) {
             for (int j = i + 1; j < count; j++) {
               bool do_swap = false;
               if (!id(speaker_grouped)[i] && id(speaker_grouped)[j]) {
@@ -315,12 +307,19 @@ script:
             }
           }
 
-          // Update group volume card with leader's volume
-          int group_pct = (int)(id(speaker_volumes)[0] * 100.0f);
-          lv_slider_set_value(id(group_vol_slider), group_pct, LV_ANIM_OFF);
-          char gv_buf[8];
-          snprintf(gv_buf, sizeof(gv_buf), "%d%%", group_pct);
-          lv_label_set_text(id(group_vol_label), gv_buf);
+          // Update group volume card with selected speaker's volume
+          std::string selected = id(media_player_entity).state;
+          for (int i = 0; i < id(speaker_count); i++) {
+            if (id(speaker_entity_ids)[i] == selected) {
+              int group_pct = (int)(id(speaker_volumes)[i] * 100.0f);
+              lv_slider_set_value(id(group_vol_slider), group_pct, LV_ANIM_OFF);
+              id(group_vol_baseline) = group_pct;
+              char gv_buf[8];
+              snprintf(gv_buf, sizeof(gv_buf), "%d%%", group_pct);
+              lv_label_set_text(id(group_vol_label), gv_buf);
+              break;
+            }
+          }
 
   # ---------------------------------------------------------------------------
   # Join / unjoin a speaker by slot index (stored in a global before calling).
@@ -331,7 +330,8 @@ script:
       slot: int
     then:
       - lambda: |-
-          if (slot < 0 || slot >= id(speaker_count) || slot == 0) return;
+          if (slot < 0 || slot >= id(speaker_count)) return;
+          if (id(speaker_entity_ids)[slot] == id(media_player_entity).state) return;
           bool currently_grouped = id(speaker_grouped)[slot];
 
           if (currently_grouped) {
@@ -470,7 +470,8 @@ script:
                   entity_id: "{{ target }}"
 
   # ---------------------------------------------------------------------------
-  # Set absolute volume on all grouped speakers (called from group slider)
+  # Adjust all grouped speakers by the delta between the slider and its baseline.
+  # Each speaker's volume is offset individually, preserving relative differences.
   # ---------------------------------------------------------------------------
   - id: group_volume_set
     mode: single
@@ -478,7 +479,7 @@ script:
       volume: float
     then:
       - lambda: |-
-          id(speaker_vol_set_level) = volume;
+          float delta = volume - (id(group_vol_baseline) / 100.0f);
           id(group_vol_index) = 0;
       - while:
           condition:
@@ -487,6 +488,10 @@ script:
               int count = id(speaker_count);
               while (i < count && !id(speaker_grouped)[i]) { i++; }
               if (i >= count) return false;
+              float new_vol = id(speaker_volumes)[i] + (volume - (id(group_vol_baseline) / 100.0f));
+              if (new_vol < 0.0f) new_vol = 0.0f;
+              if (new_vol > 1.0f) new_vol = 1.0f;
+              id(speaker_vol_set_level) = new_vol;
               id(speaker_vol_target) = id(speaker_entity_ids)[i];
               id(group_vol_index) = i + 1;
               return true;
