@@ -396,7 +396,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         layout:
                           type: flex
@@ -459,7 +459,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         hidden: true
                         layout:
@@ -525,7 +525,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         hidden: true
                         on_click:
@@ -595,7 +595,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         hidden: true
                         on_click:
@@ -665,7 +665,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         hidden: true
                         on_click:
@@ -735,7 +735,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         hidden: true
                         on_click:
@@ -805,7 +805,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         hidden: true
                         on_click:
@@ -875,7 +875,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         hidden: true
                         on_click:
@@ -945,7 +945,7 @@ lvgl:
                         pad_left: 20
                         pad_right: 20
                         pad_top: 20
-                        pad_bottom: 44
+                        pad_bottom: 34
                         scrollable: false
                         hidden: true
                         on_click:
@@ -1139,7 +1139,7 @@ lvgl:
                     flex_flow: COLUMN
                     flex_align_main: center
                     flex_align_cross: center
-                    pad_row: 20
+                    pad_row: 40
                   widgets:
                     - label:
                         text: "Starting up"
@@ -1149,7 +1149,7 @@ lvgl:
                         text_align: center
                     - bar:
                         id: loading_progress_bar
-                        width: 240
+                        width: 75
                         height: 4
                         bg_color: 0x333333
                         bg_opa: 100%
