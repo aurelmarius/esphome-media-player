@@ -393,14 +393,16 @@ lvgl:
                         bg_color: 0x5A5A5A
                         bg_opa: 100%
                         border_width: 0
-                        pad_all: 20
+                        pad_left: 20
+                        pad_right: 20
+                        pad_top: 20
+                        pad_bottom: 24
                         scrollable: false
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -440,7 +442,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
@@ -467,9 +469,8 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -510,7 +511,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
@@ -542,9 +543,8 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -585,7 +585,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
@@ -617,9 +617,8 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -660,7 +659,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
@@ -692,9 +691,8 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -735,7 +733,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
@@ -767,9 +765,8 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -810,7 +807,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
@@ -842,9 +839,8 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -885,7 +881,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
@@ -917,9 +913,8 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -960,7 +955,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
@@ -992,9 +987,8 @@ lvgl:
                         layout:
                           type: flex
                           flex_flow: COLUMN
-                          flex_align_main: start
+                          flex_align_main: space_between
                           flex_align_cross: start
-                          pad_row: 12
                         widgets:
                           - obj:
                               width: 160
@@ -1035,7 +1029,7 @@ lvgl:
                                 radius: 3
                               knob:
                                 bg_color: 0xFFFFFF
-                                radius: 12
+                                radius: 8
                                 width: 38
                                 height: 24
                                 shadow_color: 0x000000
