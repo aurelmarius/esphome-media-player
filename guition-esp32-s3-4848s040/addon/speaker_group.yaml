@@ -67,6 +67,7 @@ script:
           auto hide_speakers = []() {
             lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(speakers_close_button), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
@@ -172,6 +173,7 @@ script:
           if (count > 1) {
             lv_obj_clear_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(id(speakers_close_button), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);

@@ -18,6 +18,7 @@ font:
       - "\U000F0565"  # mdi-shield-check
       - "\U000F0502"  # mdi-television
       - "\U000F0D38"  # mdi-speaker-multiple
+      - "\U000F0156"  # mdi-close
   - file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
     id: icon_font_small
     size: 24
@@ -44,3 +45,4 @@ substitutions:
   icon_shield:   "\U000F0565"
   tv_icon:       "\U000F0502"
   icon_speakers: "\U000F0D38"
+  icon_close:    "\U000F0156"

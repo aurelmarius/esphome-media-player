@@ -312,6 +312,14 @@ sensor:
           lv_arc_set_value(id(volume_arc), (int)(x * 100.0f));
           id(volume_updating_from_ha) = false;
 
+          if (id(speaker_count) == 1) {
+            id(speaker_volumes)[0] = x;
+            int pct = (int)(x * 100.0f);
+            char buf[8];
+            snprintf(buf, sizeof(buf), "%d%%", pct);
+            lv_label_set_text(id(speaker_vol_label_0), buf);
+          }
+
 switch:
   - platform: template
     name: "Playback: Show Remaining Time"

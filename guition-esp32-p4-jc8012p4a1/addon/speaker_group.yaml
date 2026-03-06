@@ -65,9 +65,8 @@ script:
 
           if (raw.empty() || raw == "None" || raw == "unknown") {
             id(speaker_count) = 0;
-            ESP_LOGW("speaker_group", "No Sonos speakers found");
-            lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            ESP_LOGW("speaker_group", "No Sonos speakers found — showing fallback");
+            id(show_fallback_speaker).execute();
             return;
           }
 
@@ -125,9 +124,8 @@ script:
           }
 
           if (ids.empty()) {
-            ESP_LOGW("speaker_group", "No Sonos speakers found");
-            lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            ESP_LOGW("speaker_group", "No Sonos speakers parsed — showing fallback");
+            id(show_fallback_speaker).execute();
             return;
           }
 
@@ -150,9 +148,8 @@ script:
           }
 
           if (!found_selected) {
-            ESP_LOGD("speaker_group", "Selected player '%s' is not a Sonos device", selected.c_str());
-            lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            ESP_LOGD("speaker_group", "Selected player '%s' is not a Sonos device — showing fallback", selected.c_str());
+            id(show_fallback_speaker).execute();
             return;
           }
 
@@ -170,11 +167,12 @@ script:
           ESP_LOGI("speaker_group", "Discovered %d Sonos speakers", count);
 
           if (count > 1) {
+            lv_label_set_text(id(speakers_title_label), "Speakers");
             lv_obj_clear_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(id(group_vol_card), LV_OBJ_FLAG_HIDDEN);
           } else {
-            lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            id(show_fallback_speaker).execute();
           }
 
           // Sync the arc to the primary speaker's volume
@@ -182,6 +180,48 @@ script:
           id(prev_arc_value) = primary_pct;
 
       - script.execute: update_group_state
+
+  # ---------------------------------------------------------------------------
+  # Fallback: show a single card for the primary media player when the Sonos
+  # sensor is unavailable or the selected player isn't in the Sonos list.
+  # ---------------------------------------------------------------------------
+  - id: show_fallback_speaker
+    mode: restart
+    then:
+      - lambda: |-
+          std::string entity = id(media_player_entity).state;
+          if (entity.empty()) {
+            lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            return;
+          }
+
+          for (int i = 0; i < 8; i++) {
+            id(speaker_entity_ids)[i] = "";
+            id(speaker_names)[i] = "";
+            id(speaker_grouped)[i] = false;
+            id(speaker_volumes)[i] = 0.0f;
+          }
+
+          id(speaker_entity_ids)[0] = entity;
+          id(speaker_grouped)[0] = true;
+          id(speaker_count) = 1;
+
+          // Derive a display name from the entity ID
+          std::string name = entity;
+          if (name.size() > 13 && name.substr(0, 13) == "media_player.") name = name.substr(13);
+          for (auto &c : name) { if (c == '_' || c == '-') c = ' '; }
+          if (!name.empty()) name[0] = toupper(name[0]);
+          id(speaker_names)[0] = name;
+
+          id(speaker_volumes)[0] = id(media_volume_sensor).has_state()
+              ? id(media_volume_sensor).state : 0.0f;
+
+          lv_label_set_text(id(speakers_title_label), "Speaker");
+          lv_obj_clear_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(group_vol_card), LV_OBJ_FLAG_HIDDEN);
+      - script.execute: update_grouping_panel
 
   # ---------------------------------------------------------------------------
   # Parse group_members and update the grouped state for each speaker slot.
