@@ -65,22 +65,10 @@ script:
       - lambda: |-
           std::string raw = id(speakers_sensor).state;
 
-          auto hide_speakers = []() {
-            lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(speakers_close_button), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(id(drag_handle), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
-          };
-
           if (raw.empty() || raw == "None" || raw == "unknown") {
             id(speaker_count) = 0;
-            ESP_LOGW("speaker_group", "No speakers found");
-            hide_speakers();
+            ESP_LOGW("speaker_group", "No speakers found — showing fallback");
+            id(show_fallback_speaker).execute();
             return;
           }
 
@@ -133,8 +121,8 @@ script:
           }
 
           if (ids.empty()) {
-            ESP_LOGW("speaker_group", "No speakers found");
-            hide_speakers();
+            ESP_LOGW("speaker_group", "No speakers parsed — showing fallback");
+            id(show_fallback_speaker).execute();
             return;
           }
 
@@ -145,8 +133,8 @@ script:
             if (ids[i] == selected) { found_selected = true; break; }
           }
           if (!found_selected) {
-            ESP_LOGD("speaker_group", "Selected player '%s' not in speaker list", selected.c_str());
-            hide_speakers();
+            ESP_LOGD("speaker_group", "Selected player '%s' not in speaker list — showing fallback", selected.c_str());
+            id(show_fallback_speaker).execute();
             return;
           }
 
@@ -172,17 +160,13 @@ script:
           ESP_LOGI("speaker_group", "Discovered %d speakers", count);
 
           if (count > 1) {
+            lv_label_set_text(id(speakers_title_label), "Speakers");
             lv_obj_clear_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(id(speakers_close_button), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(drag_handle), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(id(group_vol_card), LV_OBJ_FLAG_HIDDEN);
           } else {
-            hide_speakers();
+            id(show_fallback_speaker).execute();
           }
 
           // Sync the arc to the selected speaker's volume
@@ -194,6 +178,48 @@ script:
           }
 
       - script.execute: update_group_state
+
+  # ---------------------------------------------------------------------------
+  # Fallback: show a single card for the primary media player when the speaker
+  # sensor is unavailable or the selected player isn't in the speaker list.
+  # ---------------------------------------------------------------------------
+  - id: show_fallback_speaker
+    mode: restart
+    then:
+      - lambda: |-
+          std::string entity = id(media_player_entity).state;
+          if (entity.empty()) {
+            lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            return;
+          }
+
+          for (int i = 0; i < 8; i++) {
+            id(speaker_entity_ids)[i] = "";
+            id(speaker_names)[i] = "";
+            id(speaker_grouped)[i] = false;
+            id(speaker_volumes)[i] = 0.0f;
+          }
+
+          id(speaker_entity_ids)[0] = entity;
+          id(speaker_grouped)[0] = true;
+          id(speaker_count) = 1;
+
+          std::string name = entity;
+          if (name.size() > 13 && name.substr(0, 13) == "media_player.") name = name.substr(13);
+          for (auto &c : name) { if (c == '_' || c == '-') c = ' '; }
+          if (!name.empty()) name[0] = toupper(name[0]);
+          id(speaker_names)[0] = name;
+
+          id(speaker_volumes)[0] = id(media_volume_sensor).has_state()
+              ? id(media_volume_sensor).state : 0.0f;
+
+          lv_label_set_text(id(speakers_title_label), "Speaker");
+          lv_obj_clear_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_clear_flag(id(speakers_close_button), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(group_vol_card), LV_OBJ_FLAG_HIDDEN);
+      - script.execute: update_grouping_panel
 
   # ---------------------------------------------------------------------------
   # Parse group_members and update the grouped state for each speaker slot.

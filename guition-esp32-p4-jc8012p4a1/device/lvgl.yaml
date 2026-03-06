@@ -350,18 +350,6 @@ lvgl:
                   text_align: left
                   hidden: true
 
-              # Hidden arc (keeps volume state for HA subscription sync)
-              - arc:
-                  id: volume_arc
-                  x: -100
-                  y: -100
-                  width: 1
-                  height: 1
-                  min_value: 0
-                  max_value: 100
-                  value: 30
-                  hidden: true
-
               # Speaker card grid
               - obj:
                   id: speakers_container

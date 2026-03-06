@@ -285,9 +285,9 @@ touchscreen:
             id(open_settings_panel).execute();
             return;
           }
-          // Swipe up to close: panel is open, but not when speakers list is visible
+          // Swipe up to close: panel is open, but not when multi-speaker list is scrollable
           if (dy < -60 && abs(dy) > abs(dx) * 2 && id(is_panel_open)
-              && lv_obj_has_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN)) {
+              && (lv_obj_has_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN) || id(speaker_count) <= 1)) {
             id(close_settings_panel).execute();
             return;
           }
@@ -434,6 +434,11 @@ script:
     mode: single
     then:
       - lambda: 'id(is_panel_open) = true;'
+      - if:
+          condition:
+            lambda: 'return id(speaker_count) == 0;'
+          then:
+            - script.execute: show_fallback_speaker
       - lvgl.widget.show: settings_panel
   - id: close_settings_panel
     mode: single
