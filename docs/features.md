@@ -6,10 +6,6 @@ Overview of what the media controller does. Many features are user-configurable 
 
 Full-screen album art is loaded from your Home Assistant instance. When a new track starts, the current artwork dims to 40% while the new image downloads, then fades back to full brightness. If artwork doesn't appear, see [Troubleshooting](/troubleshooting#the-artwork-isnt-loading).
 
-## Accent color
-
-The dominant color is extracted from the album art and applied to the UI background and play/pause button. The color is also exposed as an **Accent Color** RGB light entity in Home Assistant, so you can use it in automations (e.g. syncing room lights to match the album art).
-
 ## Now playing info
 
 The screen shows song title, artist, elapsed and remaining time, and a progress bar. The bar updates every second with smooth interpolation between position updates from Home Assistant. Tap the time label to toggle between elapsed/remaining and elapsed/total duration display. The default mode is set by the **Playback: Show Remaining Time** switch in [Settings](/configurable-settings).
@@ -32,9 +28,9 @@ To enable this, set the optional **Sonos Tv Source** field in the device's confi
 
 ## Speaker grouping
 
-Group and ungroup multi-room speakers directly from the touchscreen. A speaker icon appears on the main screen — tap it to open a panel listing all your speakers with toggle switches to group or ungroup them. Changes happen instantly via the standard Home Assistant `media_player.join` and `media_player.unjoin` services.
+Group and ungroup multi-room speakers directly from the touchscreen. A speaker icon appears on the main screen — tap it to open a panel listing all your speakers with toggle switches to group or ungroup them. 
 
-This feature works with any speaker platform that supports grouping in Home Assistant (e.g. Sonos, Google Cast, HEOS, MusicCast, LinkPlay, Bluesound). Requires a one-time setup of a template helper in Home Assistant — see [Speaker Grouping](/speaker-grouping) for instructions.
+This feature works with any speaker platform that supports grouping in Home Assistant. Requires a one-time setup of a template helper in Home Assistant — see [Speaker Grouping](/speaker-grouping) for instructions.
 
 ## Touch controls
 
