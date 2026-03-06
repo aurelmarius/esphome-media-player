@@ -138,34 +138,33 @@ script:
             return;
           }
 
+          // If the selected player isn't in the speaker list, show fallback
           std::string selected = id(media_player_entity).state;
-          int count = 0;
           bool found_selected = false;
-
           for (size_t i = 0; i < ids.size(); i++) {
-            if (ids[i] == selected) {
-              id(speaker_entity_ids)[0] = ids[i];
-              id(speaker_names)[0] = (i < names.size()) ? names[i] : ids[i];
-              id(speaker_volumes)[0] = (i < vols.size()) ? vols[i] : 0.0f;
-              id(speaker_grouped)[0] = true;
-              count = 1;
-              found_selected = true;
-              break;
-            }
+            if (ids[i] == selected) { found_selected = true; break; }
           }
-
           if (!found_selected) {
             ESP_LOGD("speaker_group", "Selected player '%s' not in speaker list", selected.c_str());
             hide_speakers();
             return;
           }
 
+          // Fill all speakers, then sort alphabetically by name
+          int count = 0;
           for (size_t i = 0; i < ids.size() && count < 8; i++) {
-            if (ids[i] != selected) {
-              id(speaker_entity_ids)[count] = ids[i];
-              id(speaker_names)[count] = (i < names.size()) ? names[i] : ids[i];
-              id(speaker_volumes)[count] = (i < vols.size()) ? vols[i] : 0.0f;
-              count++;
+            id(speaker_entity_ids)[count] = ids[i];
+            id(speaker_names)[count] = (i < names.size()) ? names[i] : ids[i];
+            id(speaker_volumes)[count] = (i < vols.size()) ? vols[i] : 0.0f;
+            count++;
+          }
+          for (int i = 0; i < count - 1; i++) {
+            for (int j = i + 1; j < count; j++) {
+              if (id(speaker_names)[i] > id(speaker_names)[j]) {
+                std::swap(id(speaker_entity_ids)[i], id(speaker_entity_ids)[j]);
+                std::swap(id(speaker_names)[i], id(speaker_names)[j]);
+                std::swap(id(speaker_volumes)[i], id(speaker_volumes)[j]);
+              }
             }
           }
 
@@ -186,8 +185,13 @@ script:
             hide_speakers();
           }
 
-          int primary_pct = (int)(id(speaker_volumes)[0] * 100.0f);
-          id(prev_arc_value) = primary_pct;
+          // Sync the arc to the selected speaker's volume
+          for (int i = 0; i < count; i++) {
+            if (id(speaker_entity_ids)[i] == selected) {
+              id(prev_arc_value) = (int)(id(speaker_volumes)[i] * 100.0f);
+              break;
+            }
+          }
 
       - script.execute: update_group_state
 
@@ -226,10 +230,13 @@ script:
             if (!token.empty()) members.push_back(token);
           }
 
-          id(speaker_grouped)[0] = true;
-
+          std::string selected = id(media_player_entity).state;
           int count = id(speaker_count);
-          for (int i = 1; i < count; i++) {
+          for (int i = 0; i < count; i++) {
+            if (id(speaker_entity_ids)[i] == selected) {
+              id(speaker_grouped)[i] = true;
+              continue;
+            }
             bool found = false;
             for (auto &m : members) {
               if (m == id(speaker_entity_ids)[i]) {
@@ -238,24 +245,6 @@ script:
               }
             }
             id(speaker_grouped)[i] = found;
-          }
-
-          for (int i = 1; i < count - 1; i++) {
-            for (int j = i + 1; j < count; j++) {
-              bool do_swap = false;
-              if (!id(speaker_grouped)[i] && id(speaker_grouped)[j]) {
-                do_swap = true;
-              } else if (id(speaker_grouped)[i] == id(speaker_grouped)[j] &&
-                         id(speaker_names)[i] > id(speaker_names)[j]) {
-                do_swap = true;
-              }
-              if (do_swap) {
-                std::swap(id(speaker_entity_ids)[i], id(speaker_entity_ids)[j]);
-                std::swap(id(speaker_names)[i], id(speaker_names)[j]);
-                std::swap(id(speaker_grouped)[i], id(speaker_grouped)[j]);
-                std::swap(id(speaker_volumes)[i], id(speaker_volumes)[j]);
-              }
-            }
           }
 
       - script.execute: update_grouping_panel
@@ -313,7 +302,15 @@ script:
             }
           }
 
-          int group_pct = (int)(id(speaker_volumes)[0] * 100.0f);
+          std::string selected = id(media_player_entity).state;
+          float group_vol = 0.0f;
+          for (int i = 0; i < id(speaker_count); i++) {
+            if (id(speaker_entity_ids)[i] == selected) {
+              group_vol = id(speaker_volumes)[i];
+              break;
+            }
+          }
+          int group_pct = (int)(group_vol * 100.0f);
           char grp_buf[8];
           snprintf(grp_buf, sizeof(grp_buf), "%d%%", group_pct);
           lv_label_set_text(id(group_vol_label), grp_buf);
@@ -328,7 +325,8 @@ script:
       slot: int
     then:
       - lambda: |-
-          if (slot < 0 || slot >= id(speaker_count) || slot == 0) return;
+          if (slot < 0 || slot >= id(speaker_count)) return;
+          if (id(speaker_entity_ids)[slot] == id(media_player_entity).state) return;
           bool currently_grouped = id(speaker_grouped)[slot];
 
           if (currently_grouped) {
