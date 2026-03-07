@@ -1,67 +1,36 @@
 # Speaker Grouping
 
-Control multi-room speaker groups directly from the touchscreen panel. The settings panel (swipe down) shows a speaker list on the right side where you can add or remove speakers from the group and adjust individual volumes.
+Group and ungroup multi-room speakers directly from the touchscreen. A speaker icon appears on the main screen — tap it to open a panel listing all your speakers with toggle switches to group or ungroup them.
 
-Speaker grouping requires speakers that support the `media_player.join` and `media_player.unjoin` services in Home Assistant.
-
-![Speaker grouping panel](../images/guition-esp32-p4-jc8012p4a1-multi-speaker.jpg)
-
-## How it works
-
-- The panel auto-discovers all speakers from the configured integration in your Home Assistant instance
-- The currently selected speaker is shown first
-- The main volume adjusts all grouped speakers proportionally, keeping their relative balance
-- Per-speaker `−` / `+` buttons let you fine-tune individual volumes within the group
-- The toggle states update automatically when the group changes
-
-## Compatibility
-
-This feature relies on Home Assistant's `media_player.join` and `media_player.unjoin` services. These are only available on speaker platforms that support grouping. If your speakers don't support these services, the grouping controls will not work.
-
-
-| Platform             | Supported | Integration name     |
-| -------------------- | --------- | -------------------- |
-| Bang & Olufsen       | Yes       | `bang_olufsen`       |
-| Bluesound            | Yes       | `bluesound`          |
-| Google Cast          | Yes       | `cast`               |
-| Heos                 | Yes       | `heos`               |
-| LinkPlay             | Yes       | `linkplay`           |
-| Sonos                | Yes       | `sonos`              |
-| Yamaha               | Yes       | `yamaha_musiccast`   |
-
+This works with any speaker platform that supports grouping in Home Assistant (Sonos, Google Cast, etc.).
 
 ## Setup
 
-One template sensor helper needs to be created in Home Assistant. This is done entirely through the UI — no YAML editing required. 
+Speaker grouping requires a **template sensor** in Home Assistant that provides the list of available speakers. The controller reads this sensor to populate the grouping panel.
 
-### Create the Speaker Group sensor
+### 1. Create a template sensor
 
-1. Go to **Settings → Devices & Services → Helpers** tab
-2. Click **+ Create Helper** → **Template** → **Template a sensor**
-3. Set the **Name** to `Speaker Group`
-4. Paste into the **State template** field
+Add the following to your Home Assistant `configuration.yaml` (or a template sensor via the UI):
 
-```
-{%- set s = integration_entities("sonos") | select("match", "media_player") | list -%}
-{{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
-```
-
-::: info
-If you're using a different platform, replace `"sonos"` with your integration name from the table above.
-:::
-
-5. Leave all other fields as default and click **Submit**.
-
-### Verify
-
-Go to **Developer Tools → States** and search for `sensor.speaker_group`. It should show a pipe-delimited string containing short entity IDs (without the `media_player.` prefix), friendly names, and volume levels, e.g.:
-
-```
-office,kitchen|Office,Kitchen|0.45,0.6
+```yaml
+template:
+  - sensor:
+      - name: "Media Player Group Members"
+        state: "ok"
+        attributes:
+          entities: >
+            {{ states.media_player
+               | selectattr('attributes.supported_features', 'defined')
+               | map(attribute='entity_id')
+               | list }}
 ```
 
-The device subscribes to this sensor automatically at boot. If the speaker page is empty, reboot the screen to see the update.
+Restart Home Assistant after adding the sensor.
 
-## Behavior
+### 2. Configure the device
 
-- The speaker list appears in the settings panel (swipe down) when there are at least two speakers from the configured integration
+On the device page in Home Assistant (**Settings → Devices & Services → ESPHome** → your device), set the **Speaker Group Sensor** field to the entity ID of the template sensor you created (e.g. `sensor.media_player_group_members`).
+
+### 3. Use it
+
+Tap the speaker icon on the main screen to open the grouping panel. Toggle speakers on or off to group or ungroup them with the primary player.

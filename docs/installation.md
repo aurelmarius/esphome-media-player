@@ -1,75 +1,51 @@
 # Installation
 
-## What you need
+## Requirements
 
-- A supported panel (see [Devices](/devices/esp32-s3-4848s040))
-- USB-C cable
-- **Google Chrome** or **Microsoft Edge** on desktop (for web flashing)
-- **Home Assistant** with a media player entity already set up
+- A supported device:
+  - [Guition ESP32-S3 4848S040 (4")](/devices/esp32-s3-4848s040)
+  - [Guition ESP32-P4 JC8012P4A1 (10.1")](/devices/esp32-p4-jc8012p4a1)
+- [Home Assistant](https://www.home-assistant.io/) with at least one `media_player` entity
+- Google Chrome or Microsoft Edge (for the web installer)
+- A USB-C cable
 
-## Step 1: Flash the firmware
+## Flash firmware
 
-Connect your panel to your computer via USB-C, select your device from the dropdown below, then click Install.
+Select your device and click **Install** to flash the firmware directly from your browser. No ESPHome dashboard or YAML required.
 
-<ClientOnly>
-  <InstallButton />
-  <template #fallback>
-    <p><em>Loading installer…</em></p>
-  </template>
-</ClientOnly>
+<InstallButton />
 
-If the installer doesn't detect your device, try the [troubleshooting](/advanced/troubleshooting#flashing-doesnt-work) section. You may need the [CH340 USB driver](https://www.wch-ic.com/downloads/CH341SER_EXE.html) on your computer.
+::: tip
+If you prefer to install via the ESPHome dashboard, see [Manual Setup](/advanced/manual-setup).
+:::
 
-## Step 2: Connect to WiFi
+## Connect to Wi-Fi
 
-After flashing, the device starts a WiFi hotspot:
+After flashing, the device creates a Wi-Fi hotspot called **esphome-media-player**. Connect to it from your phone or laptop and enter your home Wi-Fi credentials. The device will reboot and join your network.
 
-1. Connect to the hotspot from your phone or computer.
-2. When the captive portal opens, enter your home WiFi name and password.
-3. The device restarts and joins your network.
+## Add to Home Assistant
 
-## Step 3: Adopt in Home Assistant
+1. Home Assistant should automatically discover the device under **Settings → Devices & Services**. Click **Configure** to add it.
 
-When the device is on your network:
+   ![Discovered device](./images/ha-discovered.png)
 
-1. Open **Settings → Devices & Services** and look for a new ESPHome notification.
-2. Click **Configure** and complete the adoption steps.
-3. The device and its entities will appear in Home Assistant.
+2. Once added, find the device under **Settings → Devices & Services → ESPHome**.
 
-## Step 4: Select your media player
+   ![ESPHome device list](./images/ha-esphome-list.png)
 
-1. Go to **Settings → Devices & Services → ESPHome** and click your device.
-2. Under **Configuration**, find the **Media Player** field.
-3. Enter the entity ID of the player you want to control (e.g. `media_player.living_room`).
+3. Open the device page and set the **Media Player Entity** field to the `media_player` entity you want to control (e.g. `media_player.living_room_speaker`).
 
-The display will start showing the current track. You can change this later without reflashing. For more detail, see [How do I configure a media player?](/advanced/troubleshooting#how-do-i-configure-a-media-player).
+   ![ESPHome device page](./images/ha-esphome-device.png)
 
-**Optional:** If your speaker has a TV source (e.g. a home theater setup), you can also set the **Sonos Tv Source** field to show now-playing info from the TV media player when the speaker switches to its TV input. This is not required — see [TV Source](/features/tv-source) for details.
+4. Enable the media player controls for the entity if prompted.
 
-## Step 5: Enable device controls
+   ![Enable controls](./images/ha-enable-controls.png)
 
-To let the panel control play, pause, skip, and volume:
-
-1. Go to **Settings → Devices & Services → Integrations** and click **ESPHome** (not the device count).
-2. Find your device and open the **cog** to edit settings.
-3. Turn on **"Allow the device to perform Home Assistant actions"** and save.
-
-If the controls don't respond, see [Controls don't respond](/advanced/troubleshooting#controls-dont-respond).
-
-## Automatic updates
-
-The device checks for firmware updates about every 6 hours. When one is available, a **Firmware Update** entity appears in Home Assistant; you can run the update from there.
-
-## Viewing device logs
-
-Artwork load errors (e.g. when album art fails to download) are logged by the device. To see these messages in Home Assistant for remote debugging:
-
-1. Go to **Settings → Devices & Services → ESPHome** and open your device.
-2. Click **Configure** and enable **Subscribe to logs from the device**.
-3. When enabled, the device sends logs to Home Assistant. View them in **Settings → System → Logs** or **Developer Tools → Logs**. Filter by your device name or search for the `artwork` tag to find artwork-related errors.
+That's it — the screen should start showing now-playing info from your selected media player.
 
 ## Next steps
 
-- [Speaker Grouping](/features/speaker-grouping) — multi-room speaker control
-- [Settings](/features/settings) — brightness, timeouts, track info
+- [Settings](/features/settings) — configure brightness, timeouts, and display options
+- [Speaker Grouping](/features/speaker-grouping) — set up multi-room speaker control
+- [TV Source](/features/tv-source) — show TV media info on your controller
 - [Troubleshooting](/advanced/troubleshooting) — common issues and fixes

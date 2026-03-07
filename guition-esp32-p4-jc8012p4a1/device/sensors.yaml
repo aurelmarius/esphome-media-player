@@ -5,13 +5,13 @@
 # subscribe_media_player. Updates LVGL labels, bar, image, and play/pause
 # icon via on_value automations.
 # Album art URL is built automatically from the HA API client's IP address;
-# override home_assistant_url in substitutions for non-standard setups.
+# override ha_port in substitutions for non-standard setups.
 # =============================================================================
 
 globals:
   - id: ha_base_url
     type: std::string
-    initial_value: '"http://homeassistant.local:8123"'
+    initial_value: '"http://homeassistant.local:${ha_port}"'
   - id: last_media_position
     type: float
     initial_value: '0.0'

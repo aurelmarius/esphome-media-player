@@ -1,32 +1,23 @@
-# Manual installation
+# Manual Setup
 
-If you prefer to use the ESPHome dashboard (or CLI) instead of the [web installer](/), you can set up the device manually.
+Install the media player firmware via the ESPHome dashboard instead of the web installer. This gives you full control over substitutions and lets you customise behaviour that the web installer leaves at defaults.
 
 ## Prerequisites
 
-- A [supported panel](/devices/esp32-s3-4848s040) (e.g. Guition ESP32-S3 4848S040 or ESP32-P4 JC8012P4A1)
-- **Home Assistant** with the [ESPHome add-on](https://esphome.io/guides/getting_started_hassio.html) (or ESPHome CLI)
-- USB-C cable for the first flash
-- WiFi name and password
-- A media player already set up in Home Assistant
+- [ESPHome](https://esphome.io/) running (as a Home Assistant add-on or standalone)
+- Your device connected via USB for the first flash (OTA updates work after that)
 
-## Step 1: Add a new device in ESPHome
+## Create a configuration
 
-1. Open the **ESPHome dashboard** in Home Assistant.
-2. Click **New Device** → **Continue**.
-3. Choose **Empty Configuration**.
-4. Give it a name (e.g. `living-room-music`) and click **Next**, then **Edit** on the new device.
+In the ESPHome dashboard, create a new YAML configuration for your device. Use one of the examples below as a starting point.
 
-## Step 2: Use the package for your device
-
-Replace the default configuration with one of the following, depending on your hardware.
-
-**Guition ESP32-S3 4848S040 (4"):**
+### ESP32-S3 4848S040 (4")
 
 ```yaml
 substitutions:
-  name: "your-device-name"
-  friendly_name: "Your Room Music"
+  name: "music-dashboard"
+  friendly_name: "Music Dashboard"
+  # ha_port: "8123"  # Home Assistant port (change if HA runs on a non-standard port)
 
 wifi:
   ssid: !secret wifi_ssid
@@ -40,12 +31,13 @@ packages:
     refresh: 1s
 ```
 
-**Guition ESP32-P4 JC8012P4A1 (10.1"):**
+### ESP32-P4 JC8012P4A1 (10.1")
 
 ```yaml
 substitutions:
-  name: "your-device-name"
-  friendly_name: "Your Room Music"
+  name: "music-dashboard-10inch"
+  friendly_name: "Music Dashboard 10inch"
+  # ha_port: "8123"  # Home Assistant port (change if HA runs on a non-standard port)
 
 wifi:
   ssid: !secret wifi_ssid
@@ -59,77 +51,35 @@ packages:
     refresh: 1s
 ```
 
-Adjust `name` and `friendly_name`. Optionally set `media_player` and `tv_media_player` entity IDs in substitutions, or leave them empty and set them later in Home Assistant. `tv_media_player` is only needed if your speaker has a TV source (see [TV source](/features/settings#tv-source-optional)).
+## Available substitutions
 
-### Screen rotation (ESP32-S3 only)
+These substitutions can be added to the `substitutions:` block in your configuration to override the defaults.
 
-If you need to rotate the display to match your mounting orientation or power cable direction, add the `display_rotation` and touch mirror substitutions to your config. The display rotation can be set to `0`, `90`, `180`, or `270` degrees, but the touch input must be adjusted to match:
+| Substitution | Default | Description |
+|---|---|---|
+| `name` | — | Device name used on your network (required) |
+| `friendly_name` | — | Display name shown in Home Assistant (required) |
+| `media_player` | `""` | Entity ID of your primary media player (configured in HA after first boot) |
+| `tv_media_player` | `""` | Entity ID of a secondary TV media player (optional) |
+| `ha_port` | `"8123"` | Port that Home Assistant is running on |
 
-| Rotation | `touch_mirror_x` | `touch_mirror_y` |
-|----------|-------------------|-------------------|
-| `0`      | `"false"`         | `"false"`         |
-| `90`     | `"true"`          | `"false"`         |
-| `180`    | `"true"`          | `"true"`          |
-| `270`    | `"false"`         | `"true"`          |
+The ESP32-S3 4848S040 also supports rotation substitutions (`display_rotation`, `touch_mirror_x`, `touch_mirror_y`) — see the comments in `packages.yaml` for values.
 
-For example, to rotate the display 90°:
+## Non-standard Home Assistant port
+
+By default the device constructs artwork URLs using port `8123`. If your Home Assistant instance runs on a different port (for example port `80` behind a reverse proxy), album art will fail to load.
+
+To fix this, uncomment and change the `ha_port` substitution in your configuration:
 
 ```yaml
 substitutions:
-  name: "your-device-name"
-  friendly_name: "Your Room Music"
-  display_rotation: "90"
-  touch_mirror_x: "true"
-  touch_mirror_y: "false"
-
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-
-packages:
-  music_dashboard:
-    url: https://github.com/jtenniswood/esphome-media-player
-    files: [guition-esp32-s3-4848s040/packages.yaml]
-    ref: main
-    refresh: 1s
+  name: "music-dashboard"
+  friendly_name: "Music Dashboard"
+  ha_port: "80"
 ```
 
-## Step 3: Set WiFi secrets
+The device builds artwork URLs as `http://<home-assistant-ip>:<ha_port>/api/...`, so the port must match whatever port Home Assistant is reachable on from the device's network.
 
-1. In the ESPHome dashboard, open **Secrets**.
-2. Add:
-
-```yaml
-wifi_ssid: "YourWiFiName"
-wifi_password: "YourWiFiPassword"
-```
-
-3. Save.
-
-## Step 4: Flash the device
-
-1. Connect the panel via USB-C.
-2. In the dashboard, open the three-dot menu for your device → **Install**.
-3. Choose **Plug into this computer** (or **Manual download** if using the CLI).
-4. Wait for the build and upload to finish (first run can take several minutes).
-
-If the device is not detected, install the [CH340 USB driver](https://www.wch-ic.com/downloads/CH341SER_EXE.html) for your OS.
-
-## Step 5: Adopt in Home Assistant
-
-When the device is on your WiFi:
-
-1. Check **Settings → Devices & Services** for a new ESPHome notification.
-2. Click **Configure** and complete adoption.
-3. The device and entities will appear in Home Assistant.
-
-## Step 6: Select media player and settings
-
-1. Go to **Settings → Devices & Services → ESPHome** and open your device.
-2. Under **Configuration**, set the **Media Player** entity ID (e.g. `media_player.living_room`).
-3. **Optional:** If your speaker has a TV source, set the **Sonos Tv Source** entity ID to the TV media player (e.g. `media_player.apple_tv`). See [TV source](/features/settings#tv-source-optional).
-4. Adjust brightness, timeouts, and other options as in [Settings](/features/settings).
-
-To view device logs (including artwork load errors) in Home Assistant, enable **Subscribe to logs from the device** in the device's **Configure** screen. Logs then appear in **Settings → System → Logs** or **Developer Tools → Logs**.
-
-For other problems, see [Troubleshooting](/advanced/troubleshooting).
+::: tip
+Users who installed via the web installer do not need this setting — it defaults to `8123`. If you need to change the port after a web install, adopt the device into your ESPHome dashboard and add the `ha_port` substitution to the generated configuration.
+:::

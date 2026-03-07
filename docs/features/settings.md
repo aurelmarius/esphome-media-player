@@ -1,67 +1,29 @@
 # Settings
 
-All of these are available from the device page in Home Assistant (**Settings → Devices & Services → ESPHome** → your device). No YAML or reflashing needed.
+Most settings are configurable from the device page in Home Assistant (**Settings → Devices & Services → ESPHome** → your device) — no YAML or reflashing needed.
 
-## Media player selection
+![Device settings](../images/ha-device-settings.png)
 
-After first boot, the display shows **"Set media player in device settings"** until a player is set:
+## Display
 
-1. Open your device under **ESPHome**.
-2. Under **Configuration**, find the **Media Player** field.
-3. Enter the entity ID (e.g. `media_player.living_room`).
+| Setting | Description |
+|---------|-------------|
+| **Day/Night: Active Brightness** | Screen brightness during active use. Automatically adjusts between day and night values based on the `sun.sun` entity in Home Assistant. |
+| **Day/Night: Dim Brightness** | Screen brightness when dimmed (screensaver stage 1). |
+| **Day/Night: Screen Saver** | When enabled, the screen turns off after the screen-off timeout. When disabled, the screen stays at dim brightness instead of turning off. |
 
-The device updates immediately and keeps your choice across reboots. You can change it anytime. See [How do I configure a media player?](/advanced/troubleshooting#how-do-i-configure-a-media-player) if you need more detail.
+## Timeouts
 
-### TV source (optional)
-
-If your speaker has a "TV" source (e.g. a home theater setup), you can optionally configure a secondary media player so the controller shows now-playing info from the TV device when the speaker switches to the TV input. Most users can ignore this setting.
-
-1. Under **Configuration**, find the **Sonos Tv Source** field.
-2. Enter the entity ID of the media player that represents the TV source device (e.g. `media_player.apple_tv`).
-
-Leave the field empty if your speaker doesn't have a TV source or you don't want this feature — the controller works normally without it. The device reboots when this value is changed (the same as changing the primary media player). See [TV Source](/features/tv-source) for how the feature works.
-
-## Backlight and screensaver
-
-These are under the device's **Configuration** section. Values persist across reboots. Brightness adjusts automatically between day and night based on the `sun.sun` entity in Home Assistant.
-
-### Switches
-
-| Setting              | Default | Description                                                                 |
-| -------------------- | ------- | --------------------------------------------------------------------------- |
-| Day: Screen Saver    | ON      | Allow the screen to turn off during the day. Off = stays dimmed only.       |
-| Night: Screen Saver  | ON      | Allow the screen to turn off at night. Off = stays dimmed only.             |
-
-### Brightness
-
-| Setting                  | Range     | Step | Default | Description                                          |
-| ------------------------ | --------- | ---- | ------- | ---------------------------------------------------- |
-| Day: Active Brightness   | 5–100%    | 5%   | 100%    | Brightness when the screen is active during the day  |
-| Night: Active Brightness | 5–100%    | 5%   | 80%     | Brightness when the screen is active at night        |
-| Day: Dim Brightness      | 0–100%    | 5%   | 35%     | Brightness when dimmed during the day                |
-| Night: Dim Brightness    | 0–100%    | 5%   | 25%     | Brightness when dimmed at night                      |
-
-### Timeouts
-
-| Setting              | Range     | Step | Default | Description                                    |
-| -------------------- | --------- | ---- | ------- | ---------------------------------------------- |
-| Timeout: Dimming     | 1–300 s   | 1 s  | 60 s    | Inactivity before the screen dims              |
-| Timeout: Screen Off  | 1–600 s   | 1 s  | 300 s   | Time after dimming before the screen turns off |
+| Setting | Description |
+|---------|-------------|
+| **Timeout: Dimming** | Time after playback pauses before the screen dims to the dim brightness level. |
+| **Timeout: Screen Off** | Time after dimming before the screen turns off completely (if screen saver is enabled). |
 
 ## Playback
 
-### Switches
-
-| Setting                       | Default | Description                                                         |
-| ----------------------------- | ------- | ------------------------------------------------------------------- |
-| Playback: Show Remaining Time | ON      | Show elapsed / remaining time. Off = show elapsed / total duration. |
-
-### Track info (4" only)
-
-| Setting                       | Range  | Step | Default | Description                                                                                                                                                                                                 |
-| ----------------------------- | ------ | ---- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Playback: Track Info Duration | 0–60 s | 1 s  | 5 s     | How long the track info overlay stays visible after artwork has loaded (or after playback starts) before auto-hiding. **0** = never show on new track and no auto-hide timer. Tap to show again after auto-hide; it then hides only on another tap or when a new track is requested. When playback is paused, track info stays visible; the timer starts when playback resumes. |
-
-::: info
-The 10.1" panel has a side-panel layout where track info is always visible, so the Track Info Duration setting only applies to the 4" panel.
-:::
+| Setting | Description |
+|---------|-------------|
+| **Playback: Show Remaining Time** | When enabled, the time label shows elapsed and remaining time. When disabled, it shows elapsed and total duration. Tap the time label on the device to toggle this at any time. |
+| **Media Player Entity** | The `media_player` entity to control. |
+| **Sonos Tv Source** | (Optional) Entity ID of a TV media player for [TV Source](/features/tv-source) mode. Leave empty to disable. |
+| **Speaker Group Sensor** | (Optional) Entity ID of the template sensor for [Speaker Grouping](/features/speaker-grouping). Leave empty to disable. |

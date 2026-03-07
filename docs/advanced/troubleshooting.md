@@ -1,44 +1,37 @@
 # Troubleshooting
 
-Common issues and what to try.
+## The artwork isn't loading
 
-## How do I configure a media player?
+Album art is loaded from your Home Assistant instance. If it isn't appearing:
 
-1. Add your speaker (or other player) to Home Assistant so it has a `media_player` entity (e.g. Sonos, Google Cast, or any integration that provides a media player).
-2. Note the entity ID (e.g. `media_player.living_room`).
-3. On the ESPHome device: **Settings → Devices & Services → ESPHome** → your device.
-4. Under **Configuration**, find the **Media Player** field and enter that entity ID.
+1. **Check the media player entity** — make sure the entity you configured on the device page has an `entity_picture` attribute when playing. You can verify this in **Developer Tools → States** in Home Assistant.
+2. **Check network connectivity** — the device needs to reach your Home Assistant instance over the local network. Make sure both are on the same network/VLAN.
+3. **Check the image size** — very large album art images may fail to download on the ESP32's limited memory. If you're using a custom media player integration, check whether it provides a resized image URL.
+4. **Restart the device** — occasionally the image download can get stuck. A restart (via the physical button or from the ESPHome dashboard) usually resolves it.
 
-The display will start showing that player’s now-playing info. You can change it later without reflashing. See [Settings](/features/settings) for more detail.
+## The device won't connect to Wi-Fi
 
-## The artwork isn’t loading
+- Make sure you're using a 2.4 GHz Wi-Fi network. The ESP32 does not support 5 GHz.
+- If you entered the wrong credentials, the device will fall back to its hotspot mode (**esphome-media-player**). Connect to the hotspot and re-enter the correct credentials.
+- Move the device closer to your router to rule out signal issues.
 
-Artwork is fetched from Home Assistant. If cover art never appears or stays broken:
+## The device isn't discovered in Home Assistant
 
-- Check that your media player integration in Home Assistant provides artwork (e.g. in the entity’s attributes or media browser).
-- If it still doesn’t work, please [open an issue on GitHub](https://github.com/jtenniswood/esphome-media-player/issues) and include:
-  - **Media player type** (e.g. Sonos, Google Cast, Plex).
-  - **Service / integration** (e.g. “Sonos integration”, “Google Cast”).
-  - **Device logs** from the ESPHome device (or Home Assistant logs) if there are any errors.
+- Ensure the [ESPHome integration](https://www.home-assistant.io/integrations/esphome/) is installed in Home Assistant.
+- Check that the device and Home Assistant are on the same network.
+- Try adding the device manually under **Settings → Devices & Services → Add Integration → ESPHome** using the device's IP address.
 
-That helps add or fix support for your setup.
+## The screen is black / not responding
 
-## Controls don’t respond
+- Verify the device is powered via the USB-C port with an adequate power supply (5V 2A recommended).
+- Try a different USB-C cable — some cables are charge-only and don't carry data for the initial flash.
+- Re-flash the firmware using the [web installer](/installation) or the [ESPHome dashboard](/advanced/manual-setup).
 
-Play, pause, skip, and volume are sent from the panel to Home Assistant. If taps or swipes don’t do anything:
+## Controls aren't working
 
-1. Go to **Settings → Devices & Services → Integrations** and click **ESPHome** (not the device count).
-2. Find your device and click the **cog** to open its settings.
-3. Enable **“Allow the device to perform Home Assistant actions”** and save.
+- Make sure the media player entity supports the controls you're trying to use. Check **Developer Tools → States** for the `supported_features` attribute.
+- For speaker grouping, ensure you've created the template sensor — see [Speaker Grouping](/features/speaker-grouping).
 
-Until this is enabled, the device cannot control your media player. See [Step 5: Enable device controls](/installation#step-5-enable-device-controls) in Getting Started.
+## Still stuck?
 
-## Flashing doesn’t work
-
-The web installer and pre-built firmware only support the devices listed on the [Getting Started](/installation#what-you-need) page (e.g. Guition ESP32-S3 4848S040 and Guition ESP32-P4 JC8012P4A1). If you have a different board or panel:
-
-- It may be an **unsupported device type**. We don’t provide installable images for every ESP32-based display; only the ones we document.
-- Try the [CH340 USB driver](https://www.wch-ic.com/downloads/CH341SER_EXE.html) if the port doesn’t appear at all.
-- For full control over the build, use [Manual Setup](/advanced/manual-setup) with the ESPHome dashboard and the appropriate device package from the repository (if available for your hardware).
-
-If you believe your device is supported and flashing still fails, open an [issue on GitHub](https://github.com/jtenniswood/esphome-media-player/issues) with your device name and what happens when you try to flash.
+See [Raising an Issue](/advanced/raising-an-issue) for how to report a bug or request help.
