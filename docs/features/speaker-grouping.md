@@ -2,6 +2,8 @@
 
 Control multi-room speaker groups directly from the touchscreen panel. The settings panel (swipe down) shows a speaker list on the right side where you can add or remove speakers from the group and adjust individual volumes.
 
+![Speaker grouping panel](/images/guition-esp32-p4-jc8012p4a1-multi-speaker.jpg)
+
 Speaker grouping requires speakers that support the `media_player.join` and `media_player.unjoin` services in Home Assistant.
 
 ## How it works
@@ -68,6 +70,7 @@ The ESPHome panel subscribes to this sensor automatically at boot. If the speake
 
 - The speaker list appears in the settings panel (swipe down) when there are at least two speakers from the configured integration
 - Up to 8 speakers are supported
+- The panel automatically closes after 15 seconds of inactivity (no touch). Any touch resets the timer. This timeout is configurable in [Settings](/features/settings) — set to 0 to keep the panel open until manually closed
 
 ## State template reference
 

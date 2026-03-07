@@ -19,6 +19,12 @@ Most settings are configurable from the device page in Home Assistant (**Setting
 | **Timeout: Dimming** | Time after playback pauses before the screen dims to the dim brightness level. |
 | **Timeout: Screen Off** | Time after dimming before the screen turns off completely (if screen saver is enabled). |
 
+## Speakers
+
+| Setting | Description |
+|---------|-------------|
+| **Speakers: Auto-Close Timeout** | Time without any touch interaction before the speaker panel automatically closes and returns to the now-playing view. Set to 0 to disable (panel stays open until manually closed). Default: 15 seconds. |
+
 ## Playback
 
 | Setting | Description |
