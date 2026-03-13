@@ -34,6 +34,8 @@ Most settings are configurable from the device page in Home Assistant (**Setting
 
 ## Firmware Updates
 
+![Firmware update controls](../images/ha-firmware.png)
+
 | Setting | Description |
 |---------|-------------|
 | **Auto Update** | When enabled, firmware updates are installed automatically when detected. Default: on. |
