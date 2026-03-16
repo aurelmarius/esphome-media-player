@@ -407,7 +407,7 @@ lvgl:
               - button:
                   id: volume_down_button
                   align: center
-                  x: -56
+                  x: -70
                   y: 250
                   width: 96px
                   height: 96px
@@ -430,7 +430,7 @@ lvgl:
               - button:
                   id: volume_up_button
                   align: center
-                  x: 56
+                  x: 70
                   y: 250
                   width: 96px
                   height: 96px
