@@ -446,6 +446,7 @@ lvgl:
                   border_width: 0
                   shadow_width: 0
                   pad_all: 0
+                  ext_click_area: 20
                   widgets:
                     - label:
                         text_font: $icon_font
