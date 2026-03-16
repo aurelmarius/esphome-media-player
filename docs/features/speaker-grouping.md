@@ -29,7 +29,7 @@ This feature relies on Home Assistant's `media_player.join` and `media_player.un
 | LinkPlay             | Yes          | `linkplay`             |
 | Bluesound            | Yes          | `bluesound`            |
 | Bang & Olufsen       | Yes          | `bang_olufsen`         |
-| Music Assistant      | Experimental | `mass`                 |
+| Music Assistant      | Experimental | `music_assistant`      |
 
 > [!TIP] Music Assistant
 > Music Assistant support is **experimental** — it has not been fully tested and may not work with all MA player providers. Only same-type players (e.g. all Sonos or all Cast) can be grouped via sync groups. Cross-provider "universal groups" are managed within Music Assistant's own UI. If you encounter issues, please [open an issue on GitHub](https://github.com/jtenniswood/esphome-media-player/issues).
@@ -70,7 +70,7 @@ template:
       - name: "Speaker Group"
         unique_id: speaker_group
         state: >
-          {%- set s = integration_entities("mass")
+          {%- set s = integration_entities("music_assistant")
               | select("match", "media_player")
               | reject("is_state_attr", "mass_player_type", "group")
               | reject("is_state_attr", "mass_player_type", "sync_group")
@@ -78,7 +78,7 @@ template:
           {{ s | count }}
         attributes:
           data: >
-            {%- set s = integration_entities("mass")
+            {%- set s = integration_entities("music_assistant")
                 | select("match", "media_player")
                 | reject("is_state_attr", "mass_player_type", "group")
                 | reject("is_state_attr", "mass_player_type", "sync_group")
