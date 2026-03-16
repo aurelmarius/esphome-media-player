@@ -182,6 +182,11 @@ script:
           if (entity.empty()) {
             lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
             return;
           }
 
@@ -196,21 +201,24 @@ script:
           id(speaker_grouped)[0] = true;
           id(speaker_count) = 1;
 
-          std::string name = entity;
-          if (name.size() > 13 && name.substr(0, 13) == "media_player.") name = name.substr(13);
-          for (auto &c : name) { if (c == '_' || c == '-') c = ' '; }
-          if (!name.empty()) name[0] = toupper(name[0]);
-          id(speaker_names)[0] = name;
-
           id(speaker_volumes)[0] = id(media_volume_sensor).has_state()
               ? id(media_volume_sensor).state : 0.0f;
 
-          lv_label_set_text(id(speakers_title_label), "Speaker");
-          lv_obj_clear_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_clear_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_clear_flag(id(speakers_close_button), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_add_flag(id(group_vol_card), LV_OBJ_FLAG_HIDDEN);
-      - script.execute: update_grouping_panel
+          // Hide speaker card grid, show volume arc
+          lv_obj_add_flag(id(speakers_title_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(speakers_container), LV_OBJ_FLAG_HIDDEN);
+
+          int pct = (int)(id(speaker_volumes)[0] * 100.0f);
+          lv_arc_set_value(id(volume_arc), pct);
+          char buf[8];
+          snprintf(buf, sizeof(buf), "%d%%", pct);
+          lv_label_set_text(id(volume_pct_label), buf);
+
+          lv_obj_clear_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_clear_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_clear_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_clear_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_clear_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
 
   # ---------------------------------------------------------------------------
   # Parse group_members and update the grouped state for each speaker slot.
@@ -273,6 +281,13 @@ script:
     mode: restart
     then:
       - lambda: |-
+          // Hide volume arc widgets when showing multi-speaker grid
+          lv_obj_add_flag(id(volume_arc), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(volume_title_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(volume_pct_label), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(volume_down_button), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_add_flag(id(volume_up_button), LV_OBJ_FLAG_HIDDEN);
+
           lv_obj_t *cards[] = {
             id(speaker_card_0), id(speaker_card_1), id(speaker_card_2), id(speaker_card_3),
             id(speaker_card_4), id(speaker_card_5), id(speaker_card_6), id(speaker_card_7),

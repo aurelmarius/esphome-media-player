@@ -338,6 +338,117 @@ lvgl:
                   on_press:
                     - script.execute: close_settings_panel
 
+              # Volume arc dial (single-speaker mode)
+              - arc:
+                  id: volume_arc
+                  align: center
+                  y: -15
+                  width: 620
+                  height: 620
+                  min_value: 0
+                  max_value: 100
+                  value: 30
+                  adjustable: true
+                  arc_color: 0x333333
+                  arc_width: 16
+                  arc_rounded: true
+                  hidden: true
+                  indicator:
+                    arc_color: 0x999999
+                    arc_width: 16
+                    arc_rounded: true
+                  knob:
+                    bg_color: 0xFFFFFF
+                    radius: 18
+                    width: 36
+                    height: 36
+                    border_width: 0
+                  on_value:
+                    - lvgl.label.update:
+                        id: volume_pct_label
+                        text: !lambda |-
+                          char buf[8];
+                          snprintf(buf, sizeof(buf), "%d%%", (int)x);
+                          return std::string(buf);
+                    - if:
+                        condition:
+                          lambda: 'return !id(volume_updating_from_ha);'
+                        then:
+                          - homeassistant.service:
+                              service: media_player.volume_set
+                              variables:
+                                target: !lambda 'return id(media_player_entity).state;'
+                                vol_level: !lambda 'return x / 100.0f;'
+                              data_template:
+                                entity_id: "{{ target }}"
+                                volume_level: "{{ vol_level }}"
+              - label:
+                  id: volume_title_label
+                  text: "Volume"
+                  text_font: roboto24_font
+                  text_color: 0x888888
+                  align: center
+                  y: -100
+                  width: 200
+                  height: 30
+                  text_align: center
+                  hidden: true
+              - label:
+                  id: volume_pct_label
+                  text: "30%"
+                  text_font: roboto88_font
+                  text_color: 0xFFFFFF
+                  align: center
+                  y: -15
+                  width: 300
+                  height: 96
+                  text_align: center
+                  hidden: true
+              - button:
+                  id: volume_down_button
+                  align: center
+                  x: -80
+                  y: 220
+                  width: 96px
+                  height: 96px
+                  styles: control_round
+                  hidden: true
+                  widgets:
+                    - label:
+                        text_font: $icon_font
+                        align: center
+                        text: $icon_minus
+                        text_color: 0xFFFFFF
+                  on_press:
+                    - lvgl.arc.update:
+                        id: volume_arc
+                        value: !lambda |-
+                          int v = lv_arc_get_value(id(volume_arc)) - 1;
+                          if (v < 0) v = 0;
+                          return v;
+              - button:
+                  id: volume_up_button
+                  align: center
+                  x: 80
+                  y: 220
+                  width: 96px
+                  height: 96px
+                  styles: control_round
+                  hidden: true
+                  widgets:
+                    - label:
+                        text_font: $icon_font
+                        align: center
+                        text: $icon_plus
+                        text_color: 0xFFFFFF
+                  on_press:
+                    - lvgl.arc.update:
+                        id: volume_arc
+                        value: !lambda |-
+                          int v = lv_arc_get_value(id(volume_arc)) + 1;
+                          if (v > 100) v = 100;
+                          return v;
+
               # Title
               - label:
                   id: speakers_title_label
