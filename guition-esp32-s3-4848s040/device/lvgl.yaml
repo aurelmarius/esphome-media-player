@@ -493,7 +493,7 @@ lvgl:
                     - obj:
                         id: group_vol_card
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x212121
                         bg_opa: 100%
@@ -596,7 +596,7 @@ lvgl:
                     - obj:
                         id: speaker_card_0
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -708,7 +708,7 @@ lvgl:
                     - obj:
                         id: speaker_card_1
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -830,7 +830,7 @@ lvgl:
                     - obj:
                         id: speaker_card_2
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -952,7 +952,7 @@ lvgl:
                     - obj:
                         id: speaker_card_3
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -1074,7 +1074,7 @@ lvgl:
                     - obj:
                         id: speaker_card_4
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -1196,7 +1196,7 @@ lvgl:
                     - obj:
                         id: speaker_card_5
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -1318,7 +1318,7 @@ lvgl:
                     - obj:
                         id: speaker_card_6
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -1440,7 +1440,7 @@ lvgl:
                     - obj:
                         id: speaker_card_7
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -1562,7 +1562,7 @@ lvgl:
                     - obj:
                         id: speaker_card_8
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -1684,7 +1684,7 @@ lvgl:
                     - obj:
                         id: speaker_card_9
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -1806,7 +1806,7 @@ lvgl:
                     - obj:
                         id: speaker_card_10
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -1928,7 +1928,7 @@ lvgl:
                     - obj:
                         id: speaker_card_11
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -2050,7 +2050,7 @@ lvgl:
                     - obj:
                         id: speaker_card_12
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -2172,7 +2172,7 @@ lvgl:
                     - obj:
                         id: speaker_card_13
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -2294,7 +2294,7 @@ lvgl:
                     - obj:
                         id: speaker_card_14
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
@@ -2416,7 +2416,7 @@ lvgl:
                     - obj:
                         id: speaker_card_15
                         width: 212
-                        height: 180
+                        height: 210
                         radius: 24
                         bg_color: 0x000000
                         bg_opa: 100%
