@@ -17,8 +17,6 @@ In the ESPHome dashboard, create a new YAML configuration for your device. Use o
 substitutions:
   name: "music-dashboard"
   friendly_name: "Music Dashboard"
-  # ha_host: "homeassistant.local"  # Home Assistant hostname (change if HA runs on a different host or IP)
-  # ha_port: "8123"  # Home Assistant port (change if HA runs on a non-standard port)
 
 wifi:
   ssid: !secret wifi_ssid
@@ -38,8 +36,6 @@ packages:
 substitutions:
   name: "music-dashboard-10inch"
   friendly_name: "Music Dashboard 10inch"
-  # ha_host: "homeassistant.local"  # Home Assistant hostname (change if HA runs on a different host or IP)
-  # ha_port: "8123"  # Home Assistant port (change if HA runs on a non-standard port)
 
 wifi:
   ssid: !secret wifi_ssid
@@ -65,8 +61,48 @@ These substitutions can be added to the `substitutions:` block in your configura
 | `tv_media_player` | `""`                    | Entity ID of a secondary TV media player (optional)                        |
 | `ha_host`         | `"homeassistant.local"` | Hostname or IP address of Home Assistant                                   |
 | `ha_port`         | `"8123"`                | Port that Home Assistant is running on                                     |
+| `display_rotation` | `"0"`                  | Display rotation in degrees: 0, 90, 180, or 270. ESP32-S3 only.           |
+| `touch_mirror_x`  | `"false"`               | Touch X-axis mirror — must match `display_rotation`. ESP32-S3 only.       |
+| `touch_mirror_y`  | `"false"`               | Touch Y-axis mirror — must match `display_rotation`. ESP32-S3 only.       |
 
-The ESP32-S3 4848S040 also supports rotation substitutions (`display_rotation`, `touch_mirror_x`, `touch_mirror_y`) — see the comments in `packages.yaml` for values.
+## Display rotation (ESP32-S3 only)
+
+If you mount the ESP32-S3 4848S040 in a different orientation (for example to change which side the power cable exits from), you can rotate the display by setting the `display_rotation` substitution to `0`, `90`, `180`, or `270` degrees.
+
+You **must** also set `touch_mirror_x` and `touch_mirror_y` to match the rotation, otherwise touch input will not align with the display. Use the table below:
+
+| `display_rotation` | `touch_mirror_x` | `touch_mirror_y` |
+| ------------------- | ----------------- | ----------------- |
+| `"0"`               | `"false"`         | `"false"`         |
+| `"90"`              | `"true"`          | `"false"`         |
+| `"180"`             | `"true"`          | `"true"`          |
+| `"270"`             | `"false"`         | `"true"`          |
+
+### Example: 90-degree rotation
+
+```yaml
+substitutions:
+  name: "music-dashboard"
+  friendly_name: "Music Dashboard"
+  display_rotation: "90"
+  touch_mirror_x: "true"
+  touch_mirror_y: "false"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+packages:
+  music_dashboard:
+    url: https://github.com/jtenniswood/esphome-media-player
+    files: [guition-esp32-s3-4848s040/packages.yaml]
+    ref: main
+    refresh: 1s
+```
+
+::: warning
+If you set `display_rotation` without updating the touch mirror values, the screen image will be rotated but taps will register in the wrong position.
+:::
 
 ## Non-standard Home Assistant host or port
 
@@ -83,7 +119,3 @@ substitutions:
 ```
 
 The device builds artwork URLs as `http://<ha_host>:<ha_port>/api/...`, so both the host and port must match whatever Home Assistant is reachable on from the device's network.
-
-::: tip
-Users who installed via the web installer do not need these settings — they default to `homeassistant.local` and `8123`. If you need to change the host or port after a web install, adopt the device into your ESPHome dashboard and add the `ha_host` and/or `ha_port` substitutions to the generated configuration.
-:::
