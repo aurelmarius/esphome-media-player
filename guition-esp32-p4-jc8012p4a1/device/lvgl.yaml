@@ -342,7 +342,7 @@ lvgl:
               - arc:
                   id: volume_arc
                   align: center
-                  y: -15
+                  y: 15
                   width: 620
                   height: 620
                   min_value: 0
@@ -388,7 +388,7 @@ lvgl:
                   text_font: roboto24_font
                   text_color: 0x888888
                   align: center
-                  y: -100
+                  y: -70
                   width: 200
                   height: 30
                   text_align: center
@@ -399,7 +399,7 @@ lvgl:
                   text_font: roboto88_font
                   text_color: 0xFFFFFF
                   align: center
-                  y: -15
+                  y: 15
                   width: 300
                   height: 96
                   text_align: center
@@ -407,8 +407,8 @@ lvgl:
               - button:
                   id: volume_down_button
                   align: center
-                  x: -80
-                  y: 220
+                  x: -56
+                  y: 250
                   width: 96px
                   height: 96px
                   radius: 48
@@ -430,8 +430,8 @@ lvgl:
               - button:
                   id: volume_up_button
                   align: center
-                  x: 80
-                  y: 220
+                  x: 56
+                  y: 250
                   width: 96px
                   height: 96px
                   radius: 48
