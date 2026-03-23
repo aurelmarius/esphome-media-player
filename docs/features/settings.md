@@ -2,7 +2,7 @@
 
 Most settings are configurable from the device page in Home Assistant (**Settings → Devices & Services → ESPHome** → your device) — no YAML or reflashing needed.
 
-![Device settings](../images/ha-device-settings.png)
+<img src="../images/ha-device-settings.png" alt="Device settings" width="400" />
 
 ## Screen Saver
 
