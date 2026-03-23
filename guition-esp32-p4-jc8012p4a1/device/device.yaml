@@ -162,6 +162,9 @@ globals:
   - id: was_screen_dimmed
     type: bool
     initial_value: 'false'
+  - id: is_clock_showing         # True when clock screensaver overlay is visible
+    type: bool
+    initial_value: 'false'
 
   # -- Settings panel state --
   - id: is_panel_open

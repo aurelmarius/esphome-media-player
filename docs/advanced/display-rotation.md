@@ -8,14 +8,14 @@ If you set `display_rotation` without updating the touch transform values, the s
 
 ## ESP32-S3 4848S040
 
-The 480×480 square display supports all four rotations. At **270°** use **axis swap** with **both mirrors off** so taps and swipes line up with the rotated image.
+The 480×480 square display supports all four rotations. At **90°** and **270°** you need **`touch_swap_xy: "true"`** so horizontal swipes are not read as vertical (otherwise the settings panel / volume strip opens on a left–right swipe). Mirroring differs between 90° and 270°.
 
 | `display_rotation` | `touch_swap_xy` | `touch_mirror_x` | `touch_mirror_y` |
 | ------------------- | ---------------- | ----------------- | ----------------- |
 | `"0"` (default)     | `"false"`        | `"false"`         | `"false"`         |
-| `"90"`              | `"false"`        | `"true"`          | `"false"`         |
+| `"90"`              | `"true"`         | `"false"`         | `"true"`          |
 | `"180"`             | `"false"`        | `"true"`          | `"true"`          |
-| `"270"`             | `"true"`         | `"false"`         | `"false"`         |
+| `"270"`             | `"true"`         | `"true"`          | `"false"`         |
 
 ### Example: 90-degree rotation
 
@@ -24,8 +24,9 @@ substitutions:
   name: "music-dashboard"
   friendly_name: "Music Dashboard"
   display_rotation: "90"
-  touch_mirror_x: "true"
-  touch_mirror_y: "false"
+  touch_swap_xy: "true"
+  touch_mirror_x: "false"
+  touch_mirror_y: "true"
 
 wifi:
   ssid: !secret wifi_ssid
@@ -47,7 +48,7 @@ substitutions:
   friendly_name: "Music Dashboard"
   display_rotation: "270"
   touch_swap_xy: "true"
-  touch_mirror_x: "false"
+  touch_mirror_x: "true"
   touch_mirror_y: "false"
 
 wifi:
