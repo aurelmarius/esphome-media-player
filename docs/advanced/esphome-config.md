@@ -58,7 +58,7 @@ These substitutions can be added to the `substitutions:` block in your configura
 | `name`            | —                       | Device name used on your network (required)                                |
 | `friendly_name`   | —                       | Display name shown in Home Assistant (required)                            |
 | `media_player`    | `""`                    | Entity ID of your primary media player (configured in HA after first boot) |
-| `linked_media_player` | `""`                | Entity ID of a linked media player for TV or Line In source (optional)     |
+| `linked_media_player` | `""`                | Entity ID of a linked media player for TV or Line-in source (optional)     |
 | `ha_host`         | `"homeassistant.local"` | Hostname or IP address of Home Assistant                                   |
 | `ha_port`         | `"8123"`                | Port that Home Assistant is running on                                     |
 | `ha_protocol`     | `"http"`                | Protocol for artwork requests — `"http"` or `"https"`                      |

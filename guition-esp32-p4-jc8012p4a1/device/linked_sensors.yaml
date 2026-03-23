@@ -1,5 +1,5 @@
 # =============================================================================
-# LINKED SENSORS - Secondary media player for TV / Line In source mode
+# LINKED SENSORS - Secondary media player for TV / Line-in source mode
 # =============================================================================
 # Template sensors receive state from dynamic subscriptions managed by
 # subscribe_linked_media_player in media_player_select.yaml. Updates LVGL
@@ -114,7 +114,7 @@ text_sensor:
                 condition:
                   lambda: |-
                     return id(media_source_sensor).has_state()
-                        && (id(media_source_sensor).state == "TV" || id(media_source_sensor).state == "Line In");
+                        && (id(media_source_sensor).state == "TV" || id(media_source_sensor).state == "Line-in");
                 then:
                   - lambda: |-
                       id(is_tv_idle) = true;
@@ -137,7 +137,7 @@ text_sensor:
             lambda: |-
               return !id(is_tv_mode) && x == "playing"
                   && id(media_source_sensor).has_state()
-                  && (id(media_source_sensor).state == "TV" || id(media_source_sensor).state == "Line In")
+                  && (id(media_source_sensor).state == "TV" || id(media_source_sensor).state == "Line-in")
                   && !id(linked_media_player_entity).state.empty();
           then:
             - script.execute: enter_tv_mode

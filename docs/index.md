@@ -36,10 +36,10 @@ The screen shows song title, artist, elapsed and remaining time, and a progress 
 
 ### Linked media player (optional)
 
-If your speaker has a secondary input — either a **TV source** (soundbars with HDMI) or a **Line In source** (speakers/amps with a 3.5mm/RCA input) — the controller can show now-playing info from the media player connected to that input (e.g. Apple TV, Chromecast). This feature is entirely optional and the controller works without it.
+If your speaker has a secondary input — either a **TV source** (soundbars with HDMI) or a **Line-in source** (speakers/amps with a 3.5mm/RCA input) — the controller can show now-playing info from the media player connected to that input (e.g. Apple TV, Chromecast). This feature is entirely optional and the controller works without it.
 
-- **Automatic switching** — when the primary media player's source becomes "TV" or "Line In", the UI shows title, artist, artwork, and progress from the linked media player. When the source changes back, the UI reverts to the primary player.
-- **Idle state** — when the linked player is idle, off, or on standby, the screen displays the source name ("TV" or "Line In") on a black background with playback controls hidden. Controls reappear when the linked player starts playing again.
+- **Automatic switching** — when the primary media player's source becomes "TV" or "Line-in", the UI shows title, artist, artwork, and progress from the linked media player. When the source changes back, the UI reverts to the primary player.
+- **Idle state** — when the linked player is idle, off, or on standby, the screen displays the source name ("TV" or "Line-in") on a black background with playback controls hidden. Controls reappear when the linked player starts playing again.
 - **Routed controls** — play/pause, next, and previous are automatically sent to whichever player is active (music or linked).
 
 To enable this, set the optional **Source Input Media Player** field in the device's configuration to the entity ID of the media player connected to your input (e.g. `media_player.apple_tv`). Leave it empty to disable. See [Source Inputs](/features/source-inputs) for setup instructions and compatibility.

@@ -33,5 +33,5 @@ See [Screen Saver](/features/screen-saver) for all brightness, timer, clock, and
 | **Install Latest Firmware** | Manually triggers an update check and install. |
 
 See [Firmware Updates](/features/firmware-updates) for full details.
-| **Source Input Media Player** | (Optional) Entity ID of a media player connected to the speaker's TV or Line In input. See [Source Inputs](/features/source-inputs). Leave empty to disable. |
+| **Source Input Media Player** | (Optional) Entity ID of a media player connected to the speaker's TV or Line-in input. See [Source Inputs](/features/source-inputs). Leave empty to disable. |
 | **Speaker Group Sensor** | (Optional) Entity ID of the template sensor for [Speaker Grouping](/features/speaker-grouping). Leave empty to disable. |

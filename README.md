@@ -12,7 +12,7 @@ A touchscreen media controller that shows album art and track info and lets you 
 - **Accent color** — Dominant color extracted from album art, applied to the UI and exposed as an HA light entity
 - **Now playing** — Title, artist, elapsed/remaining time, and progress bar
 - **Touch controls** — Play/pause, swipe for next/previous, volume arc dial (swipe down)
-- **Linked media player** — Automatically shows now-playing from a linked media player when the speaker switches to a TV or Line In input
+- **Linked media player** — Automatically shows now-playing from a linked media player when the speaker switches to a TV or Line-in input
 - **Screensaver** — Day/night aware dimming and screen-off when paused
 - **Configurable from Home Assistant** — Media player, brightness, timeouts, track info duration; no reflashing
 
