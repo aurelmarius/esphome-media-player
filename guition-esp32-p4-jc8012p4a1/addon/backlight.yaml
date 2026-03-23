@@ -288,6 +288,17 @@ script:
                                   transition_length: 3s
                               - lvgl.pause:
 
+  - id: turn_off_display
+    mode: single
+    then:
+      - script.stop: backlight_wake_timeout
+      - lambda: 'id(is_screen_dimmed) = true;'
+      - light.turn_off:
+          id: backlight
+          transition_length: 1s
+      - delay: 1s
+      - lvgl.pause:
+
   - id: show_clock_view
     mode: single
     then:

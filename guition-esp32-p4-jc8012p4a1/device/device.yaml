@@ -158,6 +158,9 @@ globals:
   - id: touch_y_end
     type: int
     initial_value: '0'
+  - id: touch_start_time          # millis() when finger first touches (for long-press)
+    type: uint32_t
+    initial_value: '0'
 
   # -- UI overlay visibility --
   - id: is_screen_dimmed
@@ -222,6 +225,7 @@ touchscreen:
           id(touch_y_start) = touch.y;
           id(touch_x_end) = touch.x;
           id(touch_y_end) = touch.y;
+          id(touch_start_time) = millis();
       - script.execute: backlight_wake_timeout
       - lambda: |-
           if (id(is_panel_open)) id(start_speaker_panel_timeout).execute();
@@ -251,6 +255,13 @@ touchscreen:
               global_preferences->sync();
               App.safe_reboot();
             }
+            return;
+          }
+
+          // --- Long press (5 s): turn off display ---
+          if (abs(dx) < 20 && abs(dy) < 20 && !id(was_screen_dimmed)
+              && (millis() - id(touch_start_time) >= 5000)) {
+            id(turn_off_display).execute();
             return;
           }
 
