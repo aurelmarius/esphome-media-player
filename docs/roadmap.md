@@ -7,6 +7,6 @@ Have an idea? [Open a feature request](https://github.com/jtenniswood/esphome-me
 ## Planned
 
 | Feature | Description |
-| --- | --- |
-| Media Browsing | Browse and select media directly from the display — playlists, albums, etc |
+| ------- | ----------- |
+| Media Browsing | Browse and select media directly from the display |
 | Lighting Control | Overlay control for room lights and scenes |
