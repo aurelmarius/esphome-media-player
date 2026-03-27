@@ -99,9 +99,9 @@ size_t OnlineImage::resize_(int width_in, int height_in) {
   size_t new_size = this->get_buffer_size_(width, height);
   if (this->buffer_) {
     if (new_size <= this->get_buffer_size_()) {
-      // Clear reused buffer to prevent stale pixels from a previous (larger)
-      // image showing through if the new decode doesn't fill every row.
-      memset(this->buffer_, 0, this->get_buffer_size_());
+      if (width != this->buffer_width_ || height != this->buffer_height_) {
+        memset(this->buffer_, 0, this->get_buffer_size_());
+      }
       this->buffer_width_ = width;
       this->buffer_height_ = height;
       this->width_ = width;
@@ -207,7 +207,6 @@ void OnlineImage::update() {
 
   if (resolved == ImageFormat::AUTO) {
     ESP_LOGD(TAG, "Image format not identified from Content-Type, deferring to magic-byte detection");
-    this->data_start_ = nullptr;
     this->start_time_ = ::time(nullptr);
     this->last_data_millis_ = millis();
     this->enable_loop();
@@ -219,7 +218,6 @@ void OnlineImage::update() {
     this->download_error_callback_.call();
     return;
   }
-  this->data_start_ = nullptr;
   ESP_LOGI(TAG, "Downloading image (Size: %zu)", total_size);
   this->start_time_ = ::time(nullptr);
   this->last_data_millis_ = millis();

@@ -129,7 +129,7 @@ script:
   - id: delayed_idle_cleanup
     mode: restart
     then:
-      - delay: 500ms
+      - delay: 2s
       - lvgl.label.update:
           id: media_title_label
           text: "—"
