@@ -17,6 +17,7 @@ substitutions:
 packages:
   music: !include addon/music.yaml
   accent_color: !include addon/accent_color.yaml
+  warm_tones: !include addon/warm_tones.yaml
   backlight: !include addon/backlight.yaml
   time_sync: !include addon/time.yaml
   timezone: !include addon/timezone.yaml

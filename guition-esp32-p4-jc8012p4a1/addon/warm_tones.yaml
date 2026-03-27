@@ -1,0 +1,107 @@
+# =============================================================================
+# WARM TONES - Screen color temperature slider
+# =============================================================================
+# Shifts album art toward warm tones (reduced blue, slight red boost).
+# Controlled via a 0–100% slider exposed to Home Assistant.
+#
+# The tint is applied directly to the RGB565 image buffer after accent color
+# extraction, using precomputed lookup tables for speed. The undo/redo
+# pattern allows changing warmth without reloading the image.
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# Last applied warmth (for undo/redo) and retint flag
+# -----------------------------------------------------------------------------
+globals:
+  - id: warm_tone_last_w
+    type: float
+    initial_value: '0.0f'
+  - id: warm_tone_retint
+    type: bool
+    initial_value: 'false'
+
+
+# -----------------------------------------------------------------------------
+# HA slider: Screen Warmth (0–100%)
+# -----------------------------------------------------------------------------
+number:
+  - platform: template
+    name: "Screen: Warmth"
+    id: screen_warmth
+    min_value: 0
+    max_value: 100
+    step: 5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    unit_of_measurement: "%"
+    icon: "mdi:thermometer"
+    entity_category: config
+    on_value:
+      then:
+        - lambda: 'id(warm_tone_retint) = true;'
+        - script.execute: apply_warm_tones
+
+
+# -----------------------------------------------------------------------------
+# Apply warmth to current image buffer (LUT-based RGB565 tint)
+# -----------------------------------------------------------------------------
+script:
+  - id: apply_warm_tones
+    mode: restart
+    then:
+      - lambda: |-
+          bool retint = id(warm_tone_retint);
+          id(warm_tone_retint) = false;
+
+          float w = id(screen_warmth).state / 100.0f;
+          float last_w = retint ? id(warm_tone_last_w) : 0.0f;
+
+          if (fabsf(w - last_w) < 0.01f) return;
+
+          ESP_LOGI("warm", "Warmth: %d%% -> %d%%", (int)(last_w * 100.0f + 0.5f), (int)(w * 100.0f + 0.5f));
+
+          float r_undo = (last_w > 0.005f) ? 1.0f / (1.0f + last_w * 0.06f) : 1.0f;
+          float g_undo = (last_w > 0.005f) ? 1.0f / (1.0f - last_w * 0.07f) : 1.0f;
+          float b_undo = (last_w > 0.005f) ? 1.0f / (1.0f - last_w * 0.28f) : 1.0f;
+          float r_apply = 1.0f + w * 0.06f;
+          float g_apply = 1.0f - w * 0.07f;
+          float b_apply = 1.0f - w * 0.28f;
+
+          uint8_t r_lut[32], g_lut[64], b_lut[32];
+          for (int i = 0; i < 32; i++) {
+            int v = (i << 3) | (i >> 2);
+            int nv = (int)(v * r_undo * r_apply);
+            r_lut[i] = (uint8_t)((nv > 255 ? 255 : (nv < 0 ? 0 : nv)) >> 3);
+          }
+          for (int i = 0; i < 64; i++) {
+            int v = (i << 2) | (i >> 4);
+            int nv = (int)(v * g_undo * g_apply);
+            g_lut[i] = (uint8_t)((nv > 255 ? 255 : (nv < 0 ? 0 : nv)) >> 2);
+          }
+          for (int i = 0; i < 32; i++) {
+            int v = (i << 3) | (i >> 2);
+            int nv = (int)(v * b_undo * b_apply);
+            b_lut[i] = (uint8_t)((nv > 255 ? 255 : (nv < 0 ? 0 : nv)) >> 3);
+          }
+
+          auto *img = id(is_tv_mode) ? id(tv_art_background) : id(album_art_background);
+          if (!img) return;
+          lv_img_dsc_t *dsc = img->get_lv_img_dsc();
+          if (!dsc || !dsc->data) return;
+          uint8_t *buf = const_cast<uint8_t*>(dsc->data);
+          int total = img->get_width() * img->get_height();
+          for (int i = 0; i < total; i++) {
+            int pos = i * 2;
+            uint16_t px = buf[pos] | (buf[pos + 1] << 8);
+            uint8_t r5 = r_lut[(px >> 11) & 0x1F];
+            uint8_t g6 = g_lut[(px >> 5) & 0x3F];
+            uint8_t b5 = b_lut[px & 0x1F];
+            uint16_t out = (r5 << 11) | (g6 << 5) | b5;
+            buf[pos]     = out & 0xFF;
+            buf[pos + 1] = (out >> 8) & 0xFF;
+          }
+
+          lv_obj_invalidate(id(album_art_background_widget));
+          id(warm_tone_last_w) = w;

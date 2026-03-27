@@ -111,6 +111,7 @@ script:
           id: album_art_background_widget
           opa: 100%
       - script.execute: extract_accent_color
+      - script.execute: apply_warm_tones
 
   - id: handle_artwork_error
     mode: restart
