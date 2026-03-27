@@ -52,9 +52,10 @@ text_sensor:
 
 script:
   # ---------------------------------------------------------------------------
-  # Parse the pipe-delimited attribute (ids|names|volumes) from the HA
-  # template sensor into global arrays. Volumes are assigned directly
-  # during reorder so no separate volume-mapping pass is needed.
+  # Parse the pipe-delimited attribute (ids|names|volumes[|manufacturers])
+  # from the HA template sensor into global arrays. An optional 4th section
+  # carries manufacturer strings used to filter the list so only speakers
+  # of the same type as the selected entity are shown (Music Assistant).
   # ---------------------------------------------------------------------------
   - id: parse_speakers
     mode: restart
@@ -69,13 +70,17 @@ script:
             return;
           }
 
-          // Split on '|' into ids / names / volumes sections
+          // Split on '|' into ids / names / volumes / manufacturers sections
           size_t p1 = raw.find('|');
           size_t p2 = (p1 != std::string::npos) ? raw.find('|', p1 + 1) : std::string::npos;
+          size_t p3 = (p2 != std::string::npos) ? raw.find('|', p2 + 1) : std::string::npos;
           std::string ids_raw   = (p1 != std::string::npos) ? raw.substr(0, p1) : raw;
           std::string names_raw = (p1 != std::string::npos && p2 != std::string::npos)
               ? raw.substr(p1 + 1, p2 - p1 - 1) : "";
-          std::string vols_raw  = (p2 != std::string::npos) ? raw.substr(p2 + 1) : "";
+          std::string vols_raw  = (p2 != std::string::npos && p3 != std::string::npos)
+              ? raw.substr(p2 + 1, p3 - p2 - 1)
+              : (p2 != std::string::npos) ? raw.substr(p2 + 1) : "";
+          std::string mfrs_raw  = (p3 != std::string::npos) ? raw.substr(p3 + 1) : "";
 
           // Helper: split a comma-separated string into a vector, trimming whitespace
           auto split_csv = [](const std::string &s, size_t max) {
@@ -100,6 +105,7 @@ script:
           std::vector<std::string> ids   = split_csv(ids_raw, 16);
           std::vector<std::string> names = split_csv(names_raw, 16);
           std::vector<std::string> vtoks = split_csv(vols_raw, 16);
+          std::vector<std::string> mfrs  = split_csv(mfrs_raw, 16);
 
           // Restore full entity IDs (prefix stripped in HA template for brevity)
           for (auto &eid : ids) {
@@ -140,9 +146,24 @@ script:
             return;
           }
 
-          // Fill all speakers, then sort alphabetically by name
+          // Determine selected entity's manufacturer for filtering
+          std::string selected_mfr;
+          if (!mfrs.empty()) {
+            for (size_t i = 0; i < ids.size(); i++) {
+              if (ids[i] == selected && i < mfrs.size()) {
+                selected_mfr = mfrs[i];
+                break;
+              }
+            }
+          }
+
+          // Fill speakers, skipping those with a different manufacturer
           int count = 0;
           for (size_t i = 0; i < ids.size() && count < 16; i++) {
+            if (!selected_mfr.empty() && i < mfrs.size()
+                && !mfrs[i].empty() && mfrs[i] != selected_mfr) {
+              continue;
+            }
             id(speaker_entity_ids)[count] = ids[i];
             id(speaker_names)[count] = (i < names.size()) ? names[i] : ids[i];
             id(speaker_volumes)[count] = (i < vols.size()) ? vols[i] : 0.0f;

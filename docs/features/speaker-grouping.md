@@ -61,7 +61,7 @@ You *must* restart Home Assistant in order for the new template to be loaded.
 
 #### MA 2.8+
 
-Music Assistant 2.8 merges players that support multiple protocols into a single entity, so group and sync-group filtering is no longer needed. Use the same template as standard integrations:
+Music Assistant 2.8 merges players that support multiple protocols into a single entity, so group and sync-group filtering is no longer needed. The template below includes manufacturer information so the panel only shows speakers that can be grouped together (e.g. only Sonos speakers when a Sonos speaker is selected):
 
 ```yaml
 template:
@@ -78,7 +78,11 @@ template:
             {%- set s = integration_entities("music_assistant")
                 | select("match", "media_player")
                 | list -%}
-            {{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
+            {%- set ns = namespace(mfrs=[]) -%}
+            {%- for p in s -%}
+              {%- set ns.mfrs = ns.mfrs + [device_attr(device_id(p), 'manufacturer') | default('unknown', true)] -%}
+            {%- endfor -%}
+            {{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}|{{ ns.mfrs | join(",") }}
 ```
 
 #### MA 2.7 and earlier
@@ -104,7 +108,11 @@ template:
                 | reject("is_state_attr", "mass_player_type", "group")
                 | reject("is_state_attr", "mass_player_type", "sync_group")
                 | list -%}
-            {{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}
+            {%- set ns = namespace(mfrs=[]) -%}
+            {%- for p in s -%}
+              {%- set ns.mfrs = ns.mfrs + [device_attr(device_id(p), 'manufacturer') | default('unknown', true)] -%}
+            {%- endfor -%}
+            {{ s | map("replace", "media_player.", "") | join(",") }}|{{ s | map("state_attr", "friendly_name") | join(",") }}|{{ s | map("state_attr", "volume_level") | join(",") }}|{{ ns.mfrs | join(",") }}
 ```
 
 ### Verify the sensor
