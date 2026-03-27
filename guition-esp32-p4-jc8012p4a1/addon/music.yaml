@@ -125,6 +125,9 @@ script:
       - lambda: |-
           const std::string &url = id(is_tv_mode) ? id(last_tv_artwork_url) : id(last_artwork_url);
           ESP_LOGW("artwork", "Artwork download failed: %s", url.c_str());
+      - lvgl.widget.update:
+          id: album_art_background_widget
+          opa: 0%
       - if:
           condition:
             lambda: 'return !id(artwork_retry_pending);'
@@ -143,9 +146,3 @@ script:
             - lambda: |-
                 id(artwork_retry_pending) = false;
                 ESP_LOGW("artwork", "Retry also failed — clearing stale artwork");
-            - lvgl.image.update:
-                id: album_art_background_widget
-                src: album_art_placeholder
-            - lvgl.widget.update:
-                id: album_art_background_widget
-                opa: 50%

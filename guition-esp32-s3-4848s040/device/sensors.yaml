@@ -205,11 +205,6 @@ text_sensor:
     on_value:
       - if:
           condition:
-            lambda: 'return id(is_tv_mode) && x != "TV" && x != "Line-in";'
-          then:
-            - lambda: 'id(media_source_sensor).publish_state("");'
-      - if:
-          condition:
             lambda: 'return !id(is_tv_mode) && !x.empty();'
           then:
             - if:
