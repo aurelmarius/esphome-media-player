@@ -25,7 +25,7 @@ Brightness levels and screen saver behavior adapt automatically based on whether
 - **Daytime** — uses **Day: Active Brightness**, **Day: Dim Brightness**, and the **Day: Screen Saver** switch.
 - **Nighttime** — uses **Night: Active Brightness**, **Night: Dim Brightness**, and the **Night: Screen Saver** switch.
 
-This lets you configure different behavior for day and night — for example, keeping the screen on during the day but turning it off at night.
+This lets you configure different behavior for day and night — for example, keeping the screen on during the day but turning it off at night. On the ESP32-P4, [Screen Tone](/features/settings#screen-tone) warmth also follows the same day/night detection, so album art can shift warmer at night.
 
 By default, the device reads the `sun.sun` entity in Home Assistant (sun above horizon = day, below horizon = night). You can override this with any `binary_sensor` or `input_boolean` entity by setting the **Day-Night Sensor** field on the device page.
 
