@@ -67,7 +67,7 @@ text_sensor:
 # -----------------------------------------------------------------------------
 text:
   - platform: template
-    name: "Day/Night Sensor"
+    name: "Day-Night Sensor"
     id: day_night_sensor_entity
     entity_category: config
     icon: "mdi:theme-light-dark"

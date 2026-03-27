@@ -27,17 +27,17 @@ Brightness levels and screen saver behavior adapt automatically based on whether
 
 This lets you configure different behavior for day and night — for example, keeping the screen on during the day but turning it off at night.
 
-By default, the device reads the `sun.sun` entity in Home Assistant (sun above horizon = day, below horizon = night). You can override this with any `binary_sensor` or `input_boolean` entity by setting the **Day/Night Sensor** field on the device page.
+By default, the device reads the `sun.sun` entity in Home Assistant (sun above horizon = day, below horizon = night). You can override this with any `binary_sensor` or `input_boolean` entity by setting the **Day-Night Sensor** field on the device page.
 
 ### Custom day/night sensor
 
 To use your own logic for day vs night:
 
 1. Create a `binary_sensor` or `input_boolean` helper in Home Assistant that reflects your preferred day/night state (`on` = day, `off` = night).
-2. On the ESPHome device page (**Settings → Devices & Services → ESPHome** → your device), enter the entity ID in the **Day/Night Sensor** field — for example, `binary_sensor.daytime` or `input_boolean.is_daytime`.
+2. On the ESPHome device page (**Settings → Devices & Services → ESPHome** → your device), enter the entity ID in the **Day-Night Sensor** field — for example, `binary_sensor.daytime` or `input_boolean.is_daytime`.
 3. The device will immediately start using the custom sensor instead of `sun.sun`.
 
-To revert to the default sun-based behavior, clear the **Day/Night Sensor** field.
+To revert to the default sun-based behavior, clear the **Day-Night Sensor** field.
 
 This is useful when you want day/night to depend on more than just the sun — for example, room lighting levels, party mode, or a time-based schedule.
 
