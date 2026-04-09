@@ -35,6 +35,15 @@ globals:
   - id: last_artwork_url
     type: std::string
     initial_value: '""'
+  - id: weather_subscription_gen
+    type: int
+    initial_value: '0'
+  - id: weather_current_condition
+    type: std::string
+    initial_value: '""'
+  - id: weather_current_temperature
+    type: float
+    initial_value: '-999.0'
 
 # Refresh progress bar and elapsed time every second; when playing, estimate
 # position from last HA update + elapsed time so the clock moves smoothly
@@ -199,15 +208,41 @@ script:
       - script.execute: show_track_view
       - script.execute: backlight_wake_timeout
 
+  - id: subscribe_weather
+    mode: restart
+    then:
+      - lambda: |-
+          if (esphome::api::global_api_server == nullptr) return;
+          std::string entity = id(weather_entity_input).state;
+          if (entity.empty()) return;
+
+          if (entity.substr(0, 8) != "weather.") {
+            ESP_LOGW("weather_select", "Invalid entity '%s'", entity.c_str());
+            return;
+          }
+
+          id(weather_subscription_gen) += 1;
+          int gen = id(weather_subscription_gen);
+          int *gen_ptr = &id(weather_subscription_gen);
+          auto *api = esphome::api::global_api_server;
+
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>(""),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_condition) = state;
+              }));
+
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("temperature"),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                auto v = esphome::parse_number<float>(state);
+                if (v.has_value()) {
+                  id(weather_current_temperature) = v.value();
+                }
+              }));
+
+
 text_sensor:
-  - platform: homeassistant
-    id: weather_state
-    entity_id: weather.forecast_home_cc  # entitatea ta meteo din Home Assistant
-    internal: true
-  - platform: homeassistant
-    id: weather_condition
-    entity_id: weather.forecast_home_cc  # entitatea ta meteo din Home Assistant
-    internal: true
   - platform: template
     id: media_title_sensor
     on_value:
@@ -489,3 +524,22 @@ switch:
     restore_mode: RESTORE_DEFAULT_ON
     icon: "mdi:progress-clock"
     entity_category: config
+
+text:
+  - platform: template
+    name: "Weather Entity"
+    id: weather_entity_input
+    entity_category: config
+    icon: "mdi:weather-partly-cloudy"
+    mode: text
+    optimistic: true
+    restore_value: true
+    initial_value: ""
+    min_length: 0
+    max_length: 100
+    on_value:
+      - script.execute: subscribe_weather
+      
+api:
+  on_client_connected:
+    - script.execute: subscribe_weather
