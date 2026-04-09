@@ -41,9 +41,9 @@ globals:
   - id: weather_current_condition
     type: std::string
     initial_value: '""'
-  - id: weather_current_temperature
-    type: float
-    initial_value: '-999.0'
+  - id: weather_current_temperature_str
+    type: std::string
+    initial_value: '""'
 
 # Refresh progress bar and elapsed time every second; when playing, estimate
 # position from last HA update + elapsed time so the clock moves smoothly
@@ -235,12 +235,9 @@ script:
           api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("temperature"),
               std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
                 if (gen != *gen_ptr) return;
-                auto v = esphome::parse_number<float>(state);
-                if (v.has_value()) {
-                  id(weather_current_temperature) = v.value();
-                }
+                // Salvăm direct ca text, ocolind orice eroare de procesare matematică!
+                id(weather_current_temperature_str) = state;
               }));
-
 
 text_sensor:
   - platform: template
