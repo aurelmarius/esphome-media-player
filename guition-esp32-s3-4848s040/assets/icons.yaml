@@ -3,7 +3,7 @@
 # MaterialDesign-Webfont TTF uses codepoints in the PUA (U+F0xxx).
 
 font:
-- file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
+  - file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
     id: icon_font
     size: 40
     bpp: 4
