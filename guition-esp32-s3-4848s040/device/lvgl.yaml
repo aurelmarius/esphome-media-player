@@ -2711,6 +2711,6 @@ lvgl:
                   text: ""
               - label:
                   id: weather_label
-                  text_font: roboto_light40_font # Poți folosi roboto30_font sau roboto19_font dacă e prea mare
+                  text_font: roboto_light40_font 
                   text_color: 0xAAAAAA
                   text: ""
