@@ -347,6 +347,7 @@ script:
             int ox = (time.minute * 7) % 61 - 30;
             int oy = (time.minute * 13) % 41 - 20;
             lv_obj_set_pos(id(clock_label), cx + ox - w/2, cy + oy - h/2);
+            // --- ADAUGĂ ACEST BLOC PENTRU VREME ---
             std::string icon = "";
             std::string cond = id(weather_current_condition);
             if (!cond.empty()) {
@@ -362,10 +363,10 @@ script:
             }
             lv_label_set_text(id(weather_icon_label), icon.c_str());
 
-            if (id(weather_current_temperature) != -999.0) {
-              char buffer[32];
-              str_snprintf(buffer, sizeof(buffer), "%.1f°C", id(weather_current_temperature));
-              lv_label_set_text(id(weather_label), buffer);
+            // --- NOU: Afișăm textul brut + simbolul de grade ---
+            if (!id(weather_current_temperature_str).empty()) {
+              std::string temp_text = id(weather_current_temperature_str) + "°C";
+              lv_label_set_text(id(weather_label), temp_text.c_str());
             } else {
               lv_label_set_text(id(weather_label), "");
             }
@@ -383,6 +384,7 @@ script:
 
             lv_obj_set_pos(id(weather_icon_label), base_x, base_y);
             lv_obj_set_pos(id(weather_label), base_x + ico_w + spacing, base_y);
+            // --- FINAL BLOC VREME ---
           }
       - lvgl.widget.show: clock_screensaver
       - lvgl.widget.show: clock_screensaver
@@ -442,6 +444,7 @@ interval:
           int ox = (time.minute * 7) % 61 - 30;
           int oy = (time.minute * 13) % 41 - 20;
           lv_obj_set_pos(id(clock_label), cx + ox - w/2, cy + oy - h/2);
+          // --- ADAUGĂ ACEST BLOC PENTRU VREME ---
           std::string icon = "";
           std::string cond = id(weather_current_condition);
           if (!cond.empty()) {
@@ -457,10 +460,10 @@ interval:
           }
           lv_label_set_text(id(weather_icon_label), icon.c_str());
 
-          if (id(weather_current_temperature) != -999.0) {
-            char buffer[32];
-            str_snprintf(buffer, sizeof(buffer), "%.1f°C", id(weather_current_temperature));
-            lv_label_set_text(id(weather_label), buffer);
+          // --- NOU: Afișăm textul brut + simbolul de grade ---
+          if (!id(weather_current_temperature_str).empty()) {
+            std::string temp_text = id(weather_current_temperature_str) + "°C";
+            lv_label_set_text(id(weather_label), temp_text.c_str());
           } else {
             lv_label_set_text(id(weather_label), "");
           }
@@ -478,3 +481,4 @@ interval:
 
           lv_obj_set_pos(id(weather_icon_label), base_x, base_y);
           lv_obj_set_pos(id(weather_label), base_x + ico_w + spacing, base_y);
+          // --- FINAL BLOC VREME ---
