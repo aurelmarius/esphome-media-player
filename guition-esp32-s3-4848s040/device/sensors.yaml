@@ -539,6 +539,22 @@ text:
     max_length: 100
     on_value:
       - script.execute: subscribe_weather
+      - delay: 500ms
+      - if:
+          condition:
+            lambda: |-
+              std::string entity = id(weather_entity_input).state;
+              return !entity.empty()
+                  && entity.substr(0, 8) == "weather."
+                  && esphome::api::global_api_server != nullptr
+                  && esphome::api::global_api_server->is_connected();
+          then:
+            - logger.log:
+                level: INFO
+                tag: weather_select
+                format: "Rebooting to apply new weather subscription"
+            - delay: 200ms
+            - lambda: 'App.safe_reboot();'
       
 api:
   on_client_connected:
