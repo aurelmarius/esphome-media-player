@@ -347,43 +347,44 @@ script:
             int ox = (time.minute * 7) % 61 - 30;
             int oy = (time.minute * 13) % 41 - 20;
             lv_obj_set_pos(id(clock_label), cx + ox - w/2, cy + oy - h/2);
-            // 1. Determină iconița pe baza stării meteo din Home Assistant
             std::string icon = "";
-            if (id(weather_condition).has_state()) {
-              std::string cond = id(weather_condition).state;
+            std::string cond = id(weather_current_condition);
+            if (!cond.empty()) {
               if (cond == "sunny" || cond == "clear") icon = "\U000F0599";
               else if (cond == "clear-night") icon = "\U000F0594";
               else if (cond == "partlycloudy") icon = "\U000F0590";
-              else if (cond == "cloudy") icon = "\U000F058F";
+              else if (cond == "cloudy") icon = "\U000F0595";
               else if (cond == "rainy") icon = "\U000F0597";
               else if (cond == "pouring") icon = "\U000F0596";
               else if (cond == "lightning" || cond == "lightning-rainy") icon = "\U000F067D";
               else if (cond == "snowy" || cond == "snowy-rainy") icon = "\U000F059A";
               else if (cond == "fog") icon = "\U000F0591";
             }
-            
-            // 2. Aplică textele
             lv_label_set_text(id(weather_icon_label), icon.c_str());
-            if (id(weather_state).has_state()) {
-              lv_label_set_text(id(weather_label), id(weather_state).state.c_str());
+
+            if (id(weather_current_temperature) != -999.0) {
+              char buffer[32];
+              str_snprintf(buffer, sizeof(buffer), "%.1f°C", id(weather_current_temperature));
+              lv_label_set_text(id(weather_label), buffer);
+            } else {
+              lv_label_set_text(id(weather_label), "");
+            }
+
+            lv_obj_update_layout(id(weather_icon_label));
+            lv_obj_update_layout(id(weather_label));
+            
+            lv_coord_t ico_w = lv_obj_get_width(id(weather_icon_label));
+            lv_coord_t txt_w = lv_obj_get_width(id(weather_label));
+            int spacing = (ico_w > 0 && txt_w > 0) ? 10 : 0;
+            int total_w = ico_w + spacing + txt_w;
+
+            int base_x = cx + ox - total_w / 2;
+            int base_y = cy + oy + h / 2 + 20;
+
+            lv_obj_set_pos(id(weather_icon_label), base_x, base_y);
+            lv_obj_set_pos(id(weather_label), base_x + ico_w + spacing, base_y);
           }
-
-          // 3. Calculează lățimile pentru a centra elementele corect
-          lv_obj_update_layout(id(weather_icon_label));
-          lv_obj_update_layout(id(weather_label));
-          
-          lv_coord_t ico_w = lv_obj_get_width(id(weather_icon_label));
-          lv_coord_t txt_w = lv_obj_get_width(id(weather_label));
-          int spacing = (ico_w > 0 && txt_w > 0) ? 12 : 0; // 12px spațiu între iconiță și text
-          int total_w = ico_w + spacing + txt_w;
-
-          // 4. Poziționează cele două etichete (care se mișcă o dată cu ceasul)
-          int base_x = cx + ox - total_w / 2;
-          int base_y = cy + oy + h / 2 + 20;
-
-          lv_obj_set_pos(id(weather_icon_label), base_x, base_y);
-          lv_obj_set_pos(id(weather_label), base_x + ico_w + spacing, base_y);
-          }
+      - lvgl.widget.show: clock_screensaver
       - lvgl.widget.show: clock_screensaver
       - light.turn_on:
           id: backlight
@@ -441,37 +442,37 @@ interval:
           int ox = (time.minute * 7) % 61 - 30;
           int oy = (time.minute * 13) % 41 - 20;
           lv_obj_set_pos(id(clock_label), cx + ox - w/2, cy + oy - h/2);
-          // 1. Determină iconița pe baza stării meteo din Home Assistant
           std::string icon = "";
-          if (id(weather_condition).has_state()) {
-            std::string cond = id(weather_condition).state;
+          std::string cond = id(weather_current_condition);
+          if (!cond.empty()) {
             if (cond == "sunny" || cond == "clear") icon = "\U000F0599";
             else if (cond == "clear-night") icon = "\U000F0594";
             else if (cond == "partlycloudy") icon = "\U000F0590";
-            else if (cond == "cloudy") icon = "\U000F058F";
+            else if (cond == "cloudy") icon = "\U000F0595";
             else if (cond == "rainy") icon = "\U000F0597";
             else if (cond == "pouring") icon = "\U000F0596";
             else if (cond == "lightning" || cond == "lightning-rainy") icon = "\U000F067D";
             else if (cond == "snowy" || cond == "snowy-rainy") icon = "\U000F059A";
             else if (cond == "fog") icon = "\U000F0591";
           }
-          
-          // 2. Aplică textele
           lv_label_set_text(id(weather_icon_label), icon.c_str());
-          if (id(weather_state).has_state()) {
-            lv_label_set_text(id(weather_label), id(weather_state).state.c_str());
+
+          if (id(weather_current_temperature) != -999.0) {
+            char buffer[32];
+            str_snprintf(buffer, sizeof(buffer), "%.1f°C", id(weather_current_temperature));
+            lv_label_set_text(id(weather_label), buffer);
+          } else {
+            lv_label_set_text(id(weather_label), "");
           }
 
-          // 3. Calculează lățimile pentru a centra elementele corect
           lv_obj_update_layout(id(weather_icon_label));
           lv_obj_update_layout(id(weather_label));
           
           lv_coord_t ico_w = lv_obj_get_width(id(weather_icon_label));
           lv_coord_t txt_w = lv_obj_get_width(id(weather_label));
-          int spacing = (ico_w > 0 && txt_w > 0) ? 12 : 0; // 12px spațiu între iconiță și text
+          int spacing = (ico_w > 0 && txt_w > 0) ? 10 : 0;
           int total_w = ico_w + spacing + txt_w;
 
-          // 4. Poziționează cele două etichete (care se mișcă o dată cu ceasul)
           int base_x = cx + ox - total_w / 2;
           int base_y = cy + oy + h / 2 + 20;
 
