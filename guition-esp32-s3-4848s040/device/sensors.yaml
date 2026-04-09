@@ -200,6 +200,14 @@ script:
       - script.execute: backlight_wake_timeout
 
 text_sensor:
+  - platform: homeassistant
+    id: weather_state
+    entity_id: weather.forecast_home_cc  # entitatea ta meteo din Home Assistant
+    internal: true
+  - platform: homeassistant
+    id: weather_condition
+    entity_id: weather.forecast_home_cc  # entitatea ta meteo din Home Assistant
+    internal: true
   - platform: template
     id: media_title_sensor
     on_value:
