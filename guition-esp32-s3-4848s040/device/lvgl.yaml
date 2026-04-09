@@ -2704,3 +2704,13 @@ lvgl:
                   text_font: roboto_thin160_font
                   text_color: 0xFFFFFF
                   text: "00:00"
+              - label:
+                  id: weather_icon_label
+                  text_font: icon_font 
+                  text_color: 0xAAAAAA
+                  text: ""
+              - label:
+                  id: weather_label
+                  text_font: roboto_light40_font # Poți folosi roboto30_font sau roboto19_font dacă e prea mare
+                  text_color: 0xAAAAAA
+                  text: ""
