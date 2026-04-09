@@ -3,7 +3,7 @@
 # MaterialDesign-Webfont TTF uses codepoints in the PUA (U+F0xxx).
 
 font:
-  - file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
+- file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
     id: icon_font
     size: 40
     bpp: 4
@@ -19,6 +19,16 @@ font:
       - "\U000F0502"  # mdi-television
       - "\U000F0D38"  # mdi-speaker-multiple
       - "\U000F0156"  # mdi-close
+      # --- ICONIȚE METEO ADAUGATE ---
+      - "\U000F0599"  # mdi-weather-sunny
+      - "\U000F0594"  # mdi-weather-night
+      - "\U000F0590"  # mdi-weather-partly-cloudy
+      - "\U000F058F"  # mdi-weather-cloudy
+      - "\U000F0596"  # mdi-weather-pouring
+      - "\U000F0597"  # mdi-weather-rainy
+      - "\U000F067D"  # mdi-weather-lightning-rainy
+      - "\U000F059A"  # mdi-weather-snowy
+      - "\U000F0591"  # mdi-weather-fog
   - file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
     id: icon_font_small
     size: 24
