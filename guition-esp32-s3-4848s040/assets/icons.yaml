@@ -29,6 +29,7 @@ font:
       - "\U000F067D"  # mdi-weather-lightning-rainy
       - "\U000F059A"  # mdi-weather-snowy
       - "\U000F0591"  # mdi-weather-fog
+      - "\U000F059D"  # mdi-weather-windy
   - file: 'https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf'
     id: icon_font_small
     size: 24
