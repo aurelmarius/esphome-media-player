@@ -44,6 +44,15 @@ globals:
   - id: weather_current_temperature_str
     type: std::string
     initial_value: '""'
+  - id: weather_current_temperature_unit
+    type: std::string
+    initial_value: '""'
+  - id: weather_current_wind_speed
+    type: std::string
+    initial_value: '""'
+  - id: weather_current_wind_speed_unit
+    type: std::string
+    initial_value: '""'
 
 # Refresh progress bar and elapsed time every second; when playing, estimate
 # position from last HA update + elapsed time so the clock moves smoothly
@@ -226,17 +235,39 @@ script:
           int *gen_ptr = &id(weather_subscription_gen);
           auto *api = esphome::api::global_api_server;
 
+          // 1. Condiția principală
           api->subscribe_home_assistant_state(entity, esphome::optional<std::string>(""),
               std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
                 if (gen != *gen_ptr) return;
                 id(weather_current_condition) = state;
               }));
 
+          // 2. Temperatura
           api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("temperature"),
               std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
                 if (gen != *gen_ptr) return;
-                // Salvăm direct ca text, ocolind orice eroare de procesare matematică!
                 id(weather_current_temperature_str) = state;
+              }));
+
+          // 3. Unitatea de măsură temperatură (extragere dinamică)
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("temperature_unit"),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_temperature_unit) = state;
+              }));
+
+          // 4. Viteza vântului
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("wind_speed"),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_wind_speed) = state;
+              }));
+
+          // 5. Unitatea de măsură vânt
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("wind_speed_unit"),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_wind_speed_unit) = state;
               }));
 
 text_sensor:
