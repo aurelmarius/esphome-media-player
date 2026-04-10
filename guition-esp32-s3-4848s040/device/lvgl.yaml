@@ -2714,3 +2714,13 @@ lvgl:
                   text_font: roboto_light40_font 
                   text_color: 0xAAAAAA
                   text: ""
+              - label:
+                  id: weather_wind_icon_label
+                  text_font: icon_font 
+                  text_color: 0xAAAAAA
+                  text: ""
+              - label:
+                  id: weather_wind_label
+                  text_font: roboto_light40_font 
+                  text_color: 0xAAAAAA
+                  text: ""
