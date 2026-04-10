@@ -363,27 +363,69 @@ script:
             }
             lv_label_set_text(id(weather_icon_label), icon.c_str());
 
-            // --- NOU: Afișăm textul brut + simbolul de grade ---
+            // --- Temperatura + Unitate ---
             if (!id(weather_current_temperature_str).empty()) {
-              std::string temp_text = id(weather_current_temperature_str) + "°C";
+              std::string temp_text = id(weather_current_temperature_str) + id(weather_current_temperature_unit);
               lv_label_set_text(id(weather_label), temp_text.c_str());
             } else {
               lv_label_set_text(id(weather_label), "");
             }
 
+            // --- Vânt + Unitate ---
+            if (!id(weather_current_wind_speed).empty()) {
+              lv_label_set_text(id(weather_wind_icon_label), "\U000F059D"); // Iconiță vânt
+              std::string wind_text = id(weather_current_wind_speed) + " " + id(weather_current_wind_speed_unit);
+              lv_label_set_text(id(weather_wind_label), wind_text.c_str());
+            } else {
+              lv_label_set_text(id(weather_wind_icon_label), "");
+              lv_label_set_text(id(weather_wind_label), "");
+            }
+
+            // --- Calcul Lățimi ---
             lv_obj_update_layout(id(weather_icon_label));
             lv_obj_update_layout(id(weather_label));
+            lv_obj_update_layout(id(weather_wind_icon_label));
+            lv_obj_update_layout(id(weather_wind_label));
             
             lv_coord_t ico_w = lv_obj_get_width(id(weather_icon_label));
             lv_coord_t txt_w = lv_obj_get_width(id(weather_label));
-            int spacing = (ico_w > 0 && txt_w > 0) ? 10 : 0;
-            int total_w = ico_w + spacing + txt_w;
+            lv_coord_t w_ico_w = lv_obj_get_width(id(weather_wind_icon_label));
+            lv_coord_t w_txt_w = lv_obj_get_width(id(weather_wind_label));
 
-            int base_x = cx + ox - total_w / 2;
+            int spacing = 10; // Spațiu normal între iconiță și text
+            int large_spacing = 40; // Spațiu generos între grupuri (Temperatură <-> Vânt)
+
+            // Calculăm lățimea totală pentru a le putea centra sub ceas
+            int total_w = 0;
+            if (ico_w > 0) total_w += ico_w + spacing;
+            if (txt_w > 0) total_w += txt_w;
+            
+            if (w_ico_w > 0) {
+               if (total_w > 0) total_w += large_spacing;
+               total_w += w_ico_w + spacing;
+            }
+            if (w_txt_w > 0) total_w += w_txt_w;
+
+            // --- Poziționare Dinamică ---
+            int current_x = cx + ox - total_w / 2;
             int base_y = cy + oy + h / 2 + 20;
 
-            lv_obj_set_pos(id(weather_icon_label), base_x, base_y);
-            lv_obj_set_pos(id(weather_label), base_x + ico_w + spacing, base_y);
+            if (ico_w > 0) {
+              lv_obj_set_pos(id(weather_icon_label), current_x, base_y);
+              current_x += ico_w + spacing;
+            }
+            if (txt_w > 0) {
+              lv_obj_set_pos(id(weather_label), current_x, base_y);
+              current_x += txt_w;
+            }
+            if (w_ico_w > 0) {
+              if (ico_w > 0 || txt_w > 0) current_x += large_spacing;
+              lv_obj_set_pos(id(weather_wind_icon_label), current_x, base_y);
+              current_x += w_ico_w + spacing;
+            }
+            if (w_txt_w > 0) {
+              lv_obj_set_pos(id(weather_wind_label), current_x, base_y);
+            }
             // --- FINAL BLOC VREME ---
           }
       - lvgl.widget.show: clock_screensaver
@@ -460,25 +502,67 @@ interval:
           }
           lv_label_set_text(id(weather_icon_label), icon.c_str());
 
-          // --- NOU: Afișăm textul brut + simbolul de grade ---
+          // --- Temperatura + Unitate ---
           if (!id(weather_current_temperature_str).empty()) {
-            std::string temp_text = id(weather_current_temperature_str) + "°C";
+            std::string temp_text = id(weather_current_temperature_str) + id(weather_current_temperature_unit);
             lv_label_set_text(id(weather_label), temp_text.c_str());
           } else {
             lv_label_set_text(id(weather_label), "");
           }
 
+          // --- Vânt + Unitate ---
+          if (!id(weather_current_wind_speed).empty()) {
+            lv_label_set_text(id(weather_wind_icon_label), "\U000F059D"); // Iconiță vânt
+            std::string wind_text = id(weather_current_wind_speed) + " " + id(weather_current_wind_speed_unit);
+            lv_label_set_text(id(weather_wind_label), wind_text.c_str());
+          } else {
+            lv_label_set_text(id(weather_wind_icon_label), "");
+            lv_label_set_text(id(weather_wind_label), "");
+          }
+
+          // --- Calcul Lățimi ---
           lv_obj_update_layout(id(weather_icon_label));
           lv_obj_update_layout(id(weather_label));
+          lv_obj_update_layout(id(weather_wind_icon_label));
+          lv_obj_update_layout(id(weather_wind_label));
           
           lv_coord_t ico_w = lv_obj_get_width(id(weather_icon_label));
           lv_coord_t txt_w = lv_obj_get_width(id(weather_label));
-          int spacing = (ico_w > 0 && txt_w > 0) ? 10 : 0;
-          int total_w = ico_w + spacing + txt_w;
+          lv_coord_t w_ico_w = lv_obj_get_width(id(weather_wind_icon_label));
+          lv_coord_t w_txt_w = lv_obj_get_width(id(weather_wind_label));
 
-          int base_x = cx + ox - total_w / 2;
+          int spacing = 10; // Spațiu normal între iconiță și text
+          int large_spacing = 40; // Spațiu generos între grupuri (Temperatură <-> Vânt)
+
+          // Calculăm lățimea totală pentru a le putea centra sub ceas
+          int total_w = 0;
+          if (ico_w > 0) total_w += ico_w + spacing;
+          if (txt_w > 0) total_w += txt_w;
+          
+          if (w_ico_w > 0) {
+             if (total_w > 0) total_w += large_spacing;
+             total_w += w_ico_w + spacing;
+          }
+          if (w_txt_w > 0) total_w += w_txt_w;
+
+          // --- Poziționare Dinamică ---
+          int current_x = cx + ox - total_w / 2;
           int base_y = cy + oy + h / 2 + 20;
 
-          lv_obj_set_pos(id(weather_icon_label), base_x, base_y);
-          lv_obj_set_pos(id(weather_label), base_x + ico_w + spacing, base_y);
+          if (ico_w > 0) {
+            lv_obj_set_pos(id(weather_icon_label), current_x, base_y);
+            current_x += ico_w + spacing;
+          }
+          if (txt_w > 0) {
+            lv_obj_set_pos(id(weather_label), current_x, base_y);
+            current_x += txt_w;
+          }
+          if (w_ico_w > 0) {
+            if (ico_w > 0 || txt_w > 0) current_x += large_spacing;
+            lv_obj_set_pos(id(weather_wind_icon_label), current_x, base_y);
+            current_x += w_ico_w + spacing;
+          }
+          if (w_txt_w > 0) {
+            lv_obj_set_pos(id(weather_wind_label), current_x, base_y);
+          }
           // --- FINAL BLOC VREME ---
