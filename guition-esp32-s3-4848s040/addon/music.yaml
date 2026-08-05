@@ -25,7 +25,7 @@ http_request:
 
 # Placeholder shown while album art is loading or when no art is available.
 image:
-  - file: "https://github.com/jtenniswood/esphome-media-player/raw/main/guition-esp32-s3-4848s040/assets/placeholder.png"
+  - file: "https://raw.githubusercontent.com/aurelmarius/esphome-media-player/old-working/guition-esp32-s3-4848s040/assets/placeholder.png"
     id: album_art_placeholder
     type: rgb565
 
