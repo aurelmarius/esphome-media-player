@@ -25,7 +25,11 @@ http_request:
 
 # Placeholder shown while album art is loading or when no art is available.
 image:
-  - file: "https://raw.githubusercontent.com/aurelmarius/esphome-media-player/old-working/guition-esp32-s3-4848s040/assets/placeholder.png"
+  # ESPHome 2026.7 dropped metadata for the legacy 'image:' form, which makes
+  # LVGL fail with 'NoneType has no attribute image_type'. Images are platforms
+  # of the image component now.
+  - platform: file
+    file: "https://raw.githubusercontent.com/aurelmarius/esphome-media-player/old-working/guition-esp32-s3-4848s040/assets/placeholder.png"
     id: album_art_placeholder
     type: rgb565
 
