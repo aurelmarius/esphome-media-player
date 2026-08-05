@@ -20,7 +20,10 @@ button:
     on_press:
       - lambda: |-
           ESP_LOGI("diag", "---- display dump_config() follows ----");
-          id(my_display)->dump_config();
+          // MipiRgbSpi redeclares dump_config() as protected, so call it
+          // through Component, where it is public. Virtual dispatch still
+          // lands on the panel's own override.
+          static_cast<esphome::Component *>(id(my_display))->dump_config();
 
   # Paints the whole panel white, bypassing LVGL entirely.
   #  - screen turns white  -> panel and RGB scan-out are fine, the fault is in
