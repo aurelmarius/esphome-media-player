@@ -24,11 +24,6 @@ OPTIONAL_DEVICE_IDS = {
     # JC1060 has icon labels inside the volume buttons.
     "volume_down_icon",
     "volume_up_icon",
-    # Fork addition: weather row on the clock screensaver, 4848S040 only.
-    "weather_icon_label",
-    "weather_label",
-    "weather_wind_icon_label",
-    "weather_wind_label",
 }
 REQUIRED_SHARED_IDS = (
     "main_page",
