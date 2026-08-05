@@ -646,6 +646,17 @@ display:
     # before upstream stepped it down to 6 MHz. 6 MHz puts the refresh rate
     # near 20 Hz on a 480x480 panel, which this unit does not scan out.
     pclk_frequency: 12MHz
+    # Fork: the mipi_rgb GUITION-4848S040 model inherits its timings from the
+    # ST7701S base, which is defined for a 480x864 panel. These are the values
+    # this 480x480 unit ran on under the old st7701s platform: note front/back
+    # porch are swapped versus the base, and the bus is 16-bit, not 18-bit.
+    hsync_pulse_width: 8
+    hsync_front_porch: 10
+    hsync_back_porch: 20
+    vsync_pulse_width: 8
+    vsync_front_porch: 10
+    vsync_back_porch: 10
+    pixel_mode: 16bit
     update_interval: never
     auto_clear_enabled: False
     transform:
