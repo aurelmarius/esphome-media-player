@@ -358,13 +358,13 @@
     },
     {
       "key": "auto_update",
-      "default": true,
+      "default": false,
       "entity": { "domain": "switch", "name": "Firmware: Auto Update", "bool": true },
       "docs": {
         "section": "Firmware",
         "order": 30,
         "label": "Auto Update",
-        "description": "When enabled, firmware updates are installed automatically when detected."
+        "description": "Inert in this fork: the over-the-air firmware update entity has been removed, so nothing is installed automatically."
       }
     },
     {
@@ -385,26 +385,6 @@
         "name": "Firmware: Version",
         "firmwareVersion": true,
         "fetchNames": ["firmware__version", "firmware_version", "firmware_version_sensor"]
-      }
-    },
-    {
-      "key": "firmware_update",
-      "entity": { "domain": "update", "name": "Firmware: Update", "update": true },
-      "docs": {
-        "section": "Firmware",
-        "order": 20,
-        "label": "Install Update",
-        "description": "Installs the checked update when one is available."
-      }
-    },
-    {
-      "key": "check_latest",
-      "entity": { "domain": "button", "name": "Firmware: Check for Update", "skipFetch": true },
-      "docs": {
-        "section": "Firmware",
-        "order": 10,
-        "label": "Check for Update",
-        "description": "Checks public releases without installing. The same browser button changes to Install Update after a newer version is found."
       }
     },
     {
