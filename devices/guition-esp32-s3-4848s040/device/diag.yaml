@@ -21,7 +21,6 @@ button:
       - lambda: |-
           ESP_LOGI("diag", "---- display dump_config() follows ----");
           id(my_display)->dump_config();
-          ESP_LOGI("diag", "size=%dx%d", id(my_display)->get_width(), id(my_display)->get_height());
 
   # Paints the whole panel white, bypassing LVGL entirely.
   #  - screen turns white  -> panel and RGB scan-out are fine, the fault is in
