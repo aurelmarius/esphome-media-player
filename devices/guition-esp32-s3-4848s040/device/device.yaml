@@ -28,6 +28,10 @@ esp32:
   framework:
     type: esp-idf
     sdkconfig_options:
+      # Fork: restored from PR #122 (issue #119). Upstream dropped this in
+      # 02f35e2 to avoid VSYNC restart artifacts, but without it this panel
+      # scans black once the RGB stream stalls. Artifacts beat a dead screen.
+      CONFIG_LCD_RGB_RESTART_IN_VSYNC: "y"
       # Keep the RGB bounce-buffer refill ISR alive while flash writes
       # (NVS/preferences saves) briefly disable the flash cache. Without these
       # the scan-out underflows during any flash write and the panel can show
@@ -638,9 +642,10 @@ display:
     model: GUITION-4848S040
     id: my_display
     color_order: RGB
-    # 6 MHz gives the S3 RGB DMA more headroom during album-art and LVGL redraws.
-    # Higher scan rates can show transient shifted bands or stray pixels.
-    pclk_frequency: 6MHz
+    # Fork: back to the 12 MHz Guition default, the value this panel ran on
+    # before upstream stepped it down to 6 MHz. 6 MHz puts the refresh rate
+    # near 20 Hz on a 480x480 panel, which this unit does not scan out.
+    pclk_frequency: 12MHz
     update_interval: never
     auto_clear_enabled: False
     transform:
