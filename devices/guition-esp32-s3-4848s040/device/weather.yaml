@@ -1,0 +1,228 @@
+# =============================================================================
+# WEATHER DISPLAY (fork addition)
+# =============================================================================
+# Subscribes to a Home Assistant weather entity and renders the current
+# condition icon, temperature and wind speed underneath the clock screensaver.
+#
+# Requires the device lvgl.yaml to define these labels inside clock_screensaver:
+#   weather_icon_label, weather_label, weather_wind_icon_label, weather_wind_label
+# and the device icons.yaml to include the mdi-weather-* glyphs in icon_font.
+#
+# Kept device-local (not in common/) because only this device defines the
+# weather labels; common/ ids are required on every device by check_lvgl_ids.py.
+# =============================================================================
+
+globals:
+  - id: weather_subscription_gen
+    type: int
+    initial_value: '0'
+  - id: weather_current_condition
+    type: std::string
+    initial_value: '""'
+  - id: weather_current_temperature_str
+    type: std::string
+    initial_value: '""'
+  - id: weather_current_temperature_unit
+    type: std::string
+    initial_value: '""'
+  - id: weather_current_wind_speed
+    type: std::string
+    initial_value: '""'
+  - id: weather_current_wind_speed_unit
+    type: std::string
+    initial_value: '""'
+
+text:
+  - platform: template
+    name: "Weather Entity"
+    id: weather_entity_input
+    entity_category: config
+    internal: ${ha_config_internal}
+    icon: "mdi:weather-partly-cloudy"
+    mode: text
+    optimistic: true
+    restore_value: true
+    initial_value: ""
+    min_length: 0
+    max_length: 100
+    on_value:
+      - script.execute: subscribe_weather
+      - delay: 500ms
+      - if:
+          condition:
+            lambda: |-
+              std::string entity = id(weather_entity_input).state;
+              return !entity.empty()
+                  && entity.substr(0, 8) == "weather."
+                  && esphome::api::global_api_server != nullptr
+                  && esphome::api::global_api_server->is_connected();
+          then:
+            - logger.log:
+                level: INFO
+                tag: weather_select
+                format: "Rebooting to apply new weather subscription"
+            - delay: 200ms
+            - lambda: 'App.safe_reboot();'
+
+script:
+  # ---------------------------------------------------------------------------
+  # Subscribe to the configured weather entity and its attributes.
+  # ESPHome cannot unsubscribe, so a generation counter drops callbacks that
+  # belong to a previous entity selection.
+  # ---------------------------------------------------------------------------
+  - id: subscribe_weather
+    mode: restart
+    then:
+      - lambda: |-
+          if (esphome::api::global_api_server == nullptr) return;
+          std::string entity = id(weather_entity_input).state;
+          if (entity.empty()) return;
+
+          if (entity.substr(0, 8) != "weather.") {
+            ESP_LOGW("weather_select", "Invalid entity '%s' — must start with 'weather.'", entity.c_str());
+            return;
+          }
+
+          id(weather_subscription_gen) += 1;
+          int gen = id(weather_subscription_gen);
+          int *gen_ptr = &id(weather_subscription_gen);
+          auto *api = esphome::api::global_api_server;
+
+          // Main state (the condition, e.g. "partlycloudy")
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>(""),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_condition) = state;
+              }));
+
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("temperature"),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_temperature_str) = state;
+              }));
+
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("temperature_unit"),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_temperature_unit) = state;
+              }));
+
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("wind_speed"),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_wind_speed) = state;
+              }));
+
+          api->subscribe_home_assistant_state(entity, esphome::optional<std::string>("wind_speed_unit"),
+              std::function<void(const std::string &)>([gen, gen_ptr](const std::string &state) {
+                if (gen != *gen_ptr) return;
+                id(weather_current_wind_speed_unit) = state;
+              }));
+
+  # ---------------------------------------------------------------------------
+  # Render + position the weather row under the clock label.
+  # Positions are derived from clock_label's live geometry, so this stays in
+  # sync with the burn-in drift applied by backlight.yaml without patching it.
+  # ---------------------------------------------------------------------------
+  - id: refresh_weather_labels
+    mode: restart
+    then:
+      - lambda: |-
+          if (!id(is_clock_showing)) return;
+          if (lv_obj_has_flag(id(clock_screensaver), LV_OBJ_FLAG_HIDDEN)) return;
+
+          std::string icon = "";
+          std::string cond = id(weather_current_condition);
+          if (!cond.empty()) {
+            if (cond == "sunny" || cond == "clear") icon = "\U000F0599";
+            else if (cond == "clear-night") icon = "\U000F0594";
+            else if (cond == "partlycloudy") icon = "\U000F0590";
+            else if (cond == "cloudy") icon = "\U000F0595";
+            else if (cond == "rainy") icon = "\U000F0597";
+            else if (cond == "pouring") icon = "\U000F0596";
+            else if (cond == "lightning" || cond == "lightning-rainy") icon = "\U000F067D";
+            else if (cond == "snowy" || cond == "snowy-rainy") icon = "\U000F059A";
+            else if (cond == "fog") icon = "\U000F0591";
+          }
+          lv_label_set_text(id(weather_icon_label), icon.c_str());
+
+          // Temperature + unit
+          if (!id(weather_current_temperature_str).empty()) {
+            std::string temp_text = id(weather_current_temperature_str) + id(weather_current_temperature_unit);
+            lv_label_set_text(id(weather_label), temp_text.c_str());
+          } else {
+            lv_label_set_text(id(weather_label), "");
+          }
+
+          // Wind + unit
+          if (!id(weather_current_wind_speed).empty()) {
+            lv_label_set_text(id(weather_wind_icon_label), "\U000F059D");
+            std::string wind_text = id(weather_current_wind_speed) + " " + id(weather_current_wind_speed_unit);
+            lv_label_set_text(id(weather_wind_label), wind_text.c_str());
+          } else {
+            lv_label_set_text(id(weather_wind_icon_label), "");
+            lv_label_set_text(id(weather_wind_label), "");
+          }
+
+          lv_obj_update_layout(id(clock_label));
+          lv_obj_update_layout(id(weather_icon_label));
+          lv_obj_update_layout(id(weather_label));
+          lv_obj_update_layout(id(weather_wind_icon_label));
+          lv_obj_update_layout(id(weather_wind_label));
+
+          lv_coord_t ico_w = lv_obj_get_width(id(weather_icon_label));
+          lv_coord_t txt_w = lv_obj_get_width(id(weather_label));
+          lv_coord_t w_ico_w = lv_obj_get_width(id(weather_wind_icon_label));
+          lv_coord_t w_txt_w = lv_obj_get_width(id(weather_wind_label));
+
+          const int spacing = 10;        // icon <-> its text
+          const int large_spacing = 40;  // temperature group <-> wind group
+
+          int total_w = 0;
+          if (ico_w > 0) total_w += ico_w + spacing;
+          if (txt_w > 0) total_w += txt_w;
+          if (w_ico_w > 0) {
+            if (total_w > 0) total_w += large_spacing;
+            total_w += w_ico_w + spacing;
+          }
+          if (w_txt_w > 0) total_w += w_txt_w;
+
+          // Anchor to the clock label so we follow its burn-in drift.
+          int clock_x = lv_obj_get_x(id(clock_label));
+          int clock_y = lv_obj_get_y(id(clock_label));
+          int clock_w = lv_obj_get_width(id(clock_label));
+          int clock_h = lv_obj_get_height(id(clock_label));
+
+          int current_x = clock_x + clock_w / 2 - total_w / 2;
+          int base_y = clock_y + clock_h + 20;
+
+          if (ico_w > 0) {
+            lv_obj_set_pos(id(weather_icon_label), current_x, base_y);
+            current_x += ico_w + spacing;
+          }
+          if (txt_w > 0) {
+            lv_obj_set_pos(id(weather_label), current_x, base_y);
+            current_x += txt_w;
+          }
+          if (w_ico_w > 0) {
+            if (ico_w > 0 || txt_w > 0) current_x += large_spacing;
+            lv_obj_set_pos(id(weather_wind_icon_label), current_x, base_y);
+            current_x += w_ico_w + spacing;
+          }
+          if (w_txt_w > 0) {
+            lv_obj_set_pos(id(weather_wind_label), current_x, base_y);
+          }
+
+          lv_obj_invalidate(id(clock_screensaver));
+
+interval:
+  - interval: 1s
+    then:
+      - script.execute: refresh_weather_labels
+
+# Re-subscribe whenever Home Assistant reconnects. Package merging appends this
+# to the on_client_connected list in common/addon/home_assistant_api.yaml, so
+# that file stays untouched and future upstream merges stay clean.
+api:
+  on_client_connected:
+    - script.execute: subscribe_weather
