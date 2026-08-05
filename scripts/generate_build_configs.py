@@ -12,7 +12,7 @@ from product_model import Device, ROOT, load_devices
 
 
 BUILDS_DIR = ROOT / "builds"
-REPO = "jtenniswood/esphome-media-player"
+REPO = "aurelmarius/esphome-media-player"
 PROJECT_NAME = "jtenniswood.media-player"
 C6_FIRMWARE_PATH = "network_adapter_esp32c6.bin"
 C6_FIRMWARE_SHA256 = "3ccfbc4feb0be29c7f5dbe50b0c5a7f0862f0b0c30fb28e5f5a4e1c2891c53f4"

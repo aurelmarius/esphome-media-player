@@ -17,7 +17,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_REPO_URL = "https://github.com/jtenniswood/esphome-media-player"
+DEFAULT_REPO_URL = "https://github.com/aurelmarius/esphome-media-player"
 PROJECT_TITLE = "ESPHome Media Player"
 STABLE_TAG_RE = re.compile(r"^v\d+\.\d+\.\d+$")
 VERSION_RE = re.compile(r"^v\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")

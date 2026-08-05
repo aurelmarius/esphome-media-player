@@ -26,7 +26,7 @@ from product_model import Device, default_asset_slugs, device_by_slug, load_devi
 ROOT = Path(__file__).resolve().parent.parent
 PROJECT_NAME = "jtenniswood.media-player"
 FIRMWARE_NAME = "jtenniswood.media-player"
-REPO = "jtenniswood/esphome-media-player"
+REPO = "aurelmarius/esphome-media-player"
 PUBLIC_BASE_URL = "https://jtenniswood.github.io/esphome-media-player"
 VERSION_RE = re.compile(r"^v\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
 FIRMWARE_VERSION_PLACEHOLDER = '  firmware_version: "0.0.0"'

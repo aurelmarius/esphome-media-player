@@ -10,7 +10,7 @@ esphome:
     version: "${firmware_version}"
 
 dashboard_import:
-  package_import_url: github://jtenniswood/esphome-media-player/devices/guition-esp32-p4-jc4880p443/esphome.yaml@main
+  package_import_url: github://aurelmarius/esphome-media-player/devices/guition-esp32-p4-jc4880p443/esphome.yaml@main
 
 update:
   - platform: esp32_hosted
