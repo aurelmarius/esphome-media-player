@@ -10,15 +10,6 @@ globals:
     type: bool
     initial_value: 'false'
 
-external_components:
-  - source:
-      type: git
-      url: https://github.com/aurelmarius/esphome-media-player
-      ref: old-working
-      path: components
-    components: [online_image]
-    refresh: 1s
-
 http_request:
   id: http_req
   verify_ssl: ${ha_verify_ssl}
