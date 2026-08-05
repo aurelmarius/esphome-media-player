@@ -73,3 +73,65 @@ button:
       - lvgl.resume:
       - lvgl.widget.redraw:
       - lambda: 'ESP_LOGI("diag", "LVGL resumed");'
+
+  # Full UI state dump: which overlay is covering the screen, what the clock
+  # label holds, and how much memory LVGL has left to draw into.
+  - platform: template
+    name: "Diag: Dump UI State"
+    id: diag_dump_ui
+    entity_category: diagnostic
+    icon: "mdi:information-outline"
+    on_press:
+      - lambda: |-
+          ESP_LOGI("diag", "flags: lvgl_ready=%d setup=%d clock=%d dimmed=%d ui_hidden=%d panel=%d tv=%d web=%d",
+                   (int) id(lvgl_ready), (int) id(device_has_been_setup),
+                   (int) id(is_clock_showing), (int) id(is_screen_dimmed),
+                   (int) id(is_ui_hidden), (int) id(is_panel_open),
+                   (int) id(is_tv_mode), (int) id(web_settings_active));
+          ESP_LOGI("diag", "active screen is main_page: %d",
+                   (int) (lv_scr_act() == id(main_page)));
+          ESP_LOGI("diag", "hidden: clock=%d loading=%d setup_prompt=%d ha_prompt=%d wifi_prompt=%d actions=%d websettings=%d",
+                   (int) lv_obj_has_flag(id(clock_screensaver), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(loading_screen), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(setup_prompt), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(ha_setup_prompt), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(wifi_setup_prompt), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(actions_prompt), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(web_settings_screen), LV_OBJ_FLAG_HIDDEN));
+          ESP_LOGI("diag", "hidden: artwork_panel=%d artwork_widget=%d track_info=%d settings_panel=%d",
+                   (int) lv_obj_has_flag(id(artwork_bg_panel), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(album_art_background_widget), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(track_info_text), LV_OBJ_FLAG_HIDDEN),
+                   (int) lv_obj_has_flag(id(settings_panel), LV_OBJ_FLAG_HIDDEN));
+          ESP_LOGI("diag", "clock_label text='%s' pos=%d,%d size=%dx%d",
+                   lv_label_get_text(id(clock_label)),
+                   (int) lv_obj_get_x(id(clock_label)), (int) lv_obj_get_y(id(clock_label)),
+                   (int) lv_obj_get_width(id(clock_label)), (int) lv_obj_get_height(id(clock_label)));
+
+  # Ask the dashboard to render the normal track view.
+  - platform: template
+    name: "Diag: Force Track View"
+    id: diag_force_track
+    entity_category: diagnostic
+    icon: "mdi:television-play"
+    on_press:
+      - lvgl.resume:
+      - script.execute: show_track_view
+      - lvgl.widget.redraw:
+
+# Memory pressure, via ESPHome's own debug platform rather than raw heap_caps
+# calls, which are not guaranteed to be included in the generated main.cpp.
+debug:
+  update_interval: 30s
+
+sensor:
+  - platform: debug
+    free:
+      name: "Diag: Heap Free"
+      entity_category: diagnostic
+    block:
+      name: "Diag: Largest Free Block"
+      entity_category: diagnostic
+    psram:
+      name: "Diag: PSRAM Free"
+      entity_category: diagnostic
