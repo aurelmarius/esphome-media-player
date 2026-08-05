@@ -1,0 +1,73 @@
+# =============================================================================
+# DISPLAY DIAGNOSTICS (fork, temporary)
+# =============================================================================
+# The panel config is written by dump_config() during setup, before WiFi and
+# the API are up, so it never reaches a remote log viewer. These buttons let
+# the device re-emit it on demand, and paint the panel directly so we can tell
+# a dead RGB stream apart from a UI that renders nothing.
+#
+# Remove this package once the black screen is resolved.
+# =============================================================================
+
+button:
+  # Re-emits the full panel configuration (pins, timings, pixel mode) to any
+  # connected log viewer. This is the boot-time dump, replayed on demand.
+  - platform: template
+    name: "Diag: Dump Display Config"
+    id: diag_dump_display
+    entity_category: diagnostic
+    icon: "mdi:file-document-outline"
+    on_press:
+      - lambda: |-
+          ESP_LOGI("diag", "---- display dump_config() follows ----");
+          id(my_display)->dump_config();
+          ESP_LOGI("diag", "size=%dx%d", id(my_display)->get_width(), id(my_display)->get_height());
+
+  # Paints the whole panel white, bypassing LVGL entirely.
+  #  - screen turns white  -> panel and RGB scan-out are fine, the fault is in
+  #                           the LVGL/artwork layer above it
+  #  - screen stays black  -> the RGB stream itself is not reaching the panel
+  - platform: template
+    name: "Diag: White Screen"
+    id: diag_white_screen
+    entity_category: diagnostic
+    icon: "mdi:square"
+    on_press:
+      - light.turn_on:
+          id: backlight
+          brightness: 100%
+          transition_length: 0s
+      - lvgl.pause:
+      - lambda: |-
+          id(my_display)->fill(Color(255, 255, 255));
+          id(my_display)->update();
+          ESP_LOGI("diag", "filled panel white, LVGL paused");
+
+  # Same, in red — a white result can also come from a stuck backlight on some
+  # panels, red cannot.
+  - platform: template
+    name: "Diag: Red Screen"
+    id: diag_red_screen
+    entity_category: diagnostic
+    icon: "mdi:square"
+    on_press:
+      - light.turn_on:
+          id: backlight
+          brightness: 100%
+          transition_length: 0s
+      - lvgl.pause:
+      - lambda: |-
+          id(my_display)->fill(Color(255, 0, 0));
+          id(my_display)->update();
+          ESP_LOGI("diag", "filled panel red, LVGL paused");
+
+  # Hands the panel back to the dashboard.
+  - platform: template
+    name: "Diag: Resume UI"
+    id: diag_resume_ui
+    entity_category: diagnostic
+    icon: "mdi:play"
+    on_press:
+      - lvgl.resume:
+      - lvgl.widget.redraw:
+      - lambda: 'ESP_LOGI("diag", "LVGL resumed");'

@@ -48,6 +48,7 @@ packages:
   device: !include device/device.yaml
   web_activity: !include device/web_activity.yaml
   weather: !include device/weather.yaml
+  diag: !include device/diag.yaml
   lvgl: !include device/lvgl.yaml
   fonts: !include assets/fonts.yaml
   icons: !include assets/icons.yaml
