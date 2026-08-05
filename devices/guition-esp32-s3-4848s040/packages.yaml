@@ -1,4 +1,7 @@
 substitutions:
+  # Home Assistant host (fork default; overrides common/device/base.yaml)
+  ha_host: "192.168.0.251"
+
   # Display rotation in degrees: 0, 90, 180, or 270
   # Rotate to match your preferred mounting orientation / power cable direction
   display_rotation: "0"

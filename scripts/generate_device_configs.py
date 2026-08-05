@@ -12,7 +12,8 @@ from typing import Any
 from product_model import Device, ROOT, load_devices
 
 
-REPO_URL = "https://github.com/jtenniswood/esphome-media-player"
+# Fork: devices pull the remote package from this fork, not upstream.
+REPO_URL = "https://github.com/aurelmarius/esphome-media-player"
 
 
 def required_text(value: Any, label: str) -> str:
