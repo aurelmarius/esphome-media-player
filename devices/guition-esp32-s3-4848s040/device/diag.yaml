@@ -88,8 +88,6 @@ button:
                    (int) id(is_clock_showing), (int) id(is_screen_dimmed),
                    (int) id(is_ui_hidden), (int) id(is_panel_open),
                    (int) id(is_tv_mode), (int) id(web_settings_active));
-          ESP_LOGI("diag", "active screen children=%d",
-                   (int) lv_obj_get_child_cnt(lv_scr_act()));
           ESP_LOGI("diag", "hidden: clock=%d loading=%d setup_prompt=%d ha_prompt=%d wifi_prompt=%d actions=%d websettings=%d",
                    (int) lv_obj_has_flag(id(clock_screensaver), LV_OBJ_FLAG_HIDDEN),
                    (int) lv_obj_has_flag(id(loading_screen), LV_OBJ_FLAG_HIDDEN),
